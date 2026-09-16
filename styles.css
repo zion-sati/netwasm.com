@@ -433,7 +433,8 @@ footer > p { color: var(--muted); font-size: 13px; }
   .hero, .section, footer { width: min(calc(100% - 28px), var(--max)); }
   .hero { min-height: 0; padding: 70px 0 80px; gap: 55px; }
   .hero-glow { width: 100vw; left: -14px; }
-  .hero h1 { font-size: clamp(54px, 17vw, 76px); }
+  .eyebrow { font-size: 10px; letter-spacing: .08em; }
+  .hero h1 { font-size: clamp(42px, 12vw, 58px); }
   .hero-lede { font-size: 18px; }
   .hero-actions { align-items: stretch; flex-direction: column; }
   .hero-actions .button { width: 100%; }
