@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+    <meta name="description" content="NetWasm compiles C# into standalone WebAssembly Components. An 88 KB Hello World includes its runtime and precise garbage collection.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="NetWasm — C# at native Wasm size">
+    <meta property="og:description" content="Write C#. Deploy like C++. An 88 KB final Wasm component, runtime and precise GC included.">
+    <meta property="og:url" content="https://www.netwasm.com/">
+    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NetWasm — C# at native Wasm size">
+    <meta name="twitter:description" content="Write C#. Deploy like C++. An 88 KB final Wasm component, runtime and precise GC included.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <link rel="canonical" href="https://www.netwasm.com/">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://github.com">
+    <title>NetWasm — C# at native Wasm size</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="NetWasm home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M7 29V11l13 18V11l13 18V11"/>
+        </svg>
+        <span>NetWasm</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#why">Why NetWasm</a>
+        <a href="#ecosystem">Ecosystem</a>
+        <a href="https://github.com/zion-sati/NetWasm/tree/main/docs">Docs</a>
+        <a href="https://github.com/zion-sati/NetWasm">GitHub</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change color theme">
+          <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg>
+        </button>
+        <a class="button button-small playground-link" href="https://playground.netwasm.com/"><i></i> Try it now <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> A new .NET platform for WebAssembly</p>
+          <h1>C# at <em>native Wasm</em> size.</h1>
+          <p class="hero-lede">Write C#. Deploy like C++. NetWasm compiles your reachable program into one standalone WebAssembly Component.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://playground.netwasm.com/">
+              Try NetWasm now — no install
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 6l4 4-4 4"/></svg>
+            </a>
+            <a class="button button-quiet" href="#quickstart">Install locally</a>
+          </div>
+          <p class="hero-note"><span class="pulse"></span> Live Playground · No account · Your browser does the compiling</p>
+        </div>
+
+        <div class="proof-card" aria-label="NetWasm Hello World artifact size">
+          <div class="proof-topline">
+            <span class="traffic"><i></i><i></i><i></i></span>
+            <span>hello-netwasm / Release</span>
+            <span class="proof-status">verified</span>
+          </div>
+          <div class="proof-body">
+            <p class="proof-label">FINAL COMPONENT</p>
+            <p class="proof-number">88,344</p>
+            <p class="proof-unit">bytes</p>
+            <div class="proof-rule"></div>
+            <ul>
+              <li><span>✓</span> C# application</li>
+              <li><span>✓</span> Precise garbage collector</li>
+              <li><span>✓</span> Runtime included</li>
+              <li><span>✓</span> Uncompressed</li>
+            </ul>
+          </div>
+          <div class="proof-footer">
+            <code>Console.WriteLine(42);</code>
+            <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md">Reproduce it ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="manifesto" aria-label="Runtime requirements">
+        <p>NO CLR.</p>
+        <p>NO MONO.</p>
+        <p>NO <code>dotnet.js</code>.</p>
+        <p>NO APP DLLs.</p>
+      </section>
+
+      <section class="origin section" aria-label="NetWasm origin">
+        <div class="origin-lead">
+          <p class="section-kicker">The unreasonable part</p>
+          <h2>JetBrains gave Kotlin a portable Wasm platform.</h2>
+        </div>
+        <div class="origin-punch">
+          <span>ONE DEVELOPER</span>
+          <h2>built C#’s answer.</h2>
+          <p>Compiler. CoreLib. Runtime. Precise GC. SDK. WASI host. Browser toolchain. Libraries. Test integration.</p>
+        </div>
+      </section>
+
+      <section class="statement section" id="why">
+        <p class="section-kicker">The runtime tax is optional</p>
+        <h2>Build with .NET.<br><span>Run without .NET.</span></h2>
+        <p class="statement-copy">Roslyn produces CIL. NetWasm compiles the reachable program directly to Wasm, specializes its generics, and links only the runtime support it actually uses. The component is the program.</p>
+
+        <div class="flow" role="img" aria-label="C# source flows through Roslyn and NetWasm into one standalone WebAssembly component">
+          <div class="flow-node"><span>01</span><strong>C#</strong><small>Your source</small></div>
+          <svg viewBox="0 0 70 16" aria-hidden="true"><path d="M1 8h64M59 2l6 6-6 6"/></svg>
+          <div class="flow-node"><span>02</span><strong>CIL</strong><small>Roslyn</small></div>
+          <svg viewBox="0 0 70 16" aria-hidden="true"><path d="M1 8h64M59 2l6 6-6 6"/></svg>
+          <div class="flow-node flow-node-accent"><span>03</span><strong>Wasm</strong><small>NetWasm AOT</small></div>
+          <svg viewBox="0 0 70 16" aria-hidden="true"><path d="M1 8h64M59 2l6 6-6 6"/></svg>
+          <div class="flow-node flow-node-final"><span>04</span><strong>One file</strong><small>Deploy anywhere with WASI</small></div>
+        </div>
+      </section>
+
+      <section class="feature-section section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Smaller by design</p>
+            <h2>Pay for the code you use.<br>Nothing else gets a free ride.</h2>
+          </div>
+          <p>NetWasm starts with a smaller platform contract: closed-world compilation, precise GC, and explicit host capabilities. It does not drag desktop assumptions into every deployment.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature feature-large">
+            <div class="feature-icon feature-icon-rings" aria-hidden="true"><i></i><i></i><i></i></div>
+            <p class="feature-index">01 / CLOSED WORLD</p>
+            <h3>Unused means gone.</h3>
+            <p>Only reachable code, data, generics, and imports survive. An unused package reference does not become deployment baggage.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">&lt;/&gt;</div>
+            <p class="feature-index">02 / REAL C#</p>
+            <h3>Keep the language.</h3>
+            <p>Generics, exceptions, async, managed memory, and precise garbage collection compile into the final artifact.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">⌁</div>
+            <p class="feature-index">03 / WASI</p>
+            <h3>Capabilities are explicit.</h3>
+            <p>Programs receive the clocks, HTTP, files, and host interfaces you choose—not ambient access to the machine.</p>
+          </article>
+          <article class="feature feature-wide">
+            <div>
+              <p class="feature-index">04 / BOTH ADDRESS WIDTHS</p>
+              <h3>wasm32 today. Memory64 when you need it.</h3>
+              <p>Ship portable wasm32 WASI Preview 2 Components, or target raw wasm32 and wasm64 core modules for advanced hosts.</p>
+            </div>
+            <div class="memory-visual" aria-hidden="true">
+              <span><i style="--w: 32%"></i><b>wasm32</b></span>
+              <span><i style="--w: 78%"></i><b>wasm64</b></span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="ecosystem section" id="ecosystem">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Not a toy compiler</p>
+            <h2>The C# loop is already here.</h2>
+          </div>
+          <p>Build, run, publish, test, and reuse focused libraries with the commands you already know.</p>
+        </div>
+
+        <div class="command-strip" aria-label="Supported dotnet commands">
+          <code>dotnet build</code><span>·</span><code>dotnet run</code><span>·</span><code>dotnet publish</code><span>·</span><code>dotnet test</code>
+        </div>
+
+        <div class="ecosystem-grid">
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm.Libraries">
+            <span class="ecosystem-number">12</span>
+            <h3>Focused libraries</h3>
+            <p>LINQ, JSON, Regex, XML, HTTP, Pipelines, Hashing, Memory, and reflection-free dependency injection.</p>
+            <strong>Explore libraries <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/TUnit-NetWasm">
+            <span class="ecosystem-number">T</span>
+            <h3>Tests that compile too</h3>
+            <p>Run TUnit through ordinary <code>dotnet test</code>, with source-generated discovery and a NetWasm runner.</p>
+            <strong>Test on Wasm <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://playground.netwasm.com/">
+            <span class="ecosystem-number">▶</span>
+            <h3>A compiler in your browser</h3>
+            <p>Edit C#, compile it locally, run the result, compare optimization settings, and download the component.</p>
+            <strong>Try it now — no install <span>↗</span></strong>
+          </a>
+        </div>
+      </section>
+
+      <section class="quickstart section" id="quickstart">
+        <div class="quickstart-copy">
+          <p class="section-kicker">Five commands to Wasm</p>
+          <h2>Try the real thing.</h2>
+          <p>Install the templates, create an app, run it locally, then publish a standalone Component.</p>
+          <p class="prereq">Requires .NET SDK 10.0.300+, Git, Python 3, and the supported Emscripten SDK.</p>
+          <a class="text-link" href="https://github.com/zion-sati/NetWasm/blob/main/docs/sdk-quickstart.md">Read the full quickstart <span>↗</span></a>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="traffic"><i></i><i></i><i></i></span>
+            <span>terminal</span>
+            <button class="copy-button" type="button" data-copy-target="quickstart-code">Copy</button>
+          </div>
+          <pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates
+<span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
+<span class="prompt">$</span> cd HelloNetWasm
+<span class="prompt">$</span> dotnet run
+<span class="output">42</span>
+<span class="prompt">$</span> dotnet publish -c Release -o publish/local</code></pre>
+        </div>
+      </section>
+
+      <section class="final-cta section">
+        <div class="final-grid" aria-hidden="true"></div>
+        <p class="section-kicker">Stop reading. Compile something.</p>
+        <h2>Your C#.<br><span>One Wasm file.</span></h2>
+        <p>The Playground runs the compiler in your browser. Start with Hello World, then try JSON, Regex, dependency injection, LINQ, hashing, or TUnit.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://playground.netwasm.com/">Try NetWasm now — no install <span aria-hidden="true">↗</span></a>
+          <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm">View source on GitHub</a>
+        </div>
+      </section>
+
+      <section class="boundary section" aria-labelledby="boundary-title">
+        <h2 id="boundary-title">NetWasm 0.2 is ready for early adopters.</h2>
+        <p>NetWasm is pre-1.0, so its API and ABI can evolve. The current profile deliberately excludes runtime reflection, <code>dynamic</code>, runtime assembly loading, managed threading, general managed file APIs, raw sockets, and subprocesses.</p>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md">See the exact support boundary →</a>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top" aria-label="NetWasm home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg>
+        <span>NetWasm</span>
+      </a>
+      <p>C# at native Wasm size.</p>
+      <div class="footer-links">
+        <a href="https://github.com/zion-sati/NetWasm">GitHub</a>
+        <a href="https://github.com/zion-sati/NetWasm/tree/main/docs">Documentation</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/licensing.md">Licensing</a>
+        <a href="https://github.com/sponsors/zion-sati">Sponsor</a>
+      </div>
+    </footer>
+  </body>
+</html>

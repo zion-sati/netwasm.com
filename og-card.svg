@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="20%" cy="0%" r="90%">
+      <stop offset="0" stop-color="#714bff" stop-opacity=".42"/>
+      <stop offset=".72" stop-color="#080b10" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#202735" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#080b10"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="770" width="430" height="630" fill="url(#grid)" opacity=".7"/>
+  <path d="M70 88V48l34 40V48l34 40V48" fill="none" stroke="#9b7cff" stroke-width="8" stroke-linecap="square" stroke-linejoin="bevel"/>
+  <text x="162" y="83" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="34" font-weight="700">NetWasm</text>
+  <text x="70" y="220" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="88" font-weight="800" letter-spacing="-5">C# at native</text>
+  <text x="70" y="310" fill="#9b7cff" font-family="Arial, sans-serif" font-size="88" font-weight="800" letter-spacing="-5">Wasm size.</text>
+  <text x="73" y="377" fill="#aab3c1" font-family="Arial, sans-serif" font-size="27">Write C#. Deploy like C++.</text>
+  <rect x="72" y="438" width="392" height="102" rx="12" fill="#10151e" stroke="#30394a"/>
+  <text x="97" y="474" fill="#8590a0" font-family="monospace" font-size="15" letter-spacing="2">FINAL COMPONENT</text>
+  <text x="95" y="520" fill="#f4f6fa" font-family="monospace" font-size="45" font-weight="700">88,344 bytes</text>
+  <text x="810" y="500" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="26" font-weight="700">Runtime included.</text>
+  <text x="810" y="538" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="26" font-weight="700">Precise GC included.</text>
+  <text x="810" y="582" fill="#9b7cff" font-family="monospace" font-size="18">www.netwasm.com</text>
+</svg>
