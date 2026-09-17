@@ -205,10 +205,10 @@
 
       <section class="quickstart section" id="quickstart">
         <div class="quickstart-copy">
-          <p class="section-kicker">Five commands to Wasm</p>
+          <p class="section-kicker">Local quickstart</p>
           <h2>Try the real thing.</h2>
-          <p>Install the templates, create an app, run it locally, then publish a standalone Component.</p>
-          <p class="prereq">Requires .NET SDK 10.0.300+, Git, Python 3, and the supported Emscripten SDK.</p>
+          <p>Install the build prerequisites first, then create an app, run it locally, and publish a standalone Component.</p>
+          <p class="prereq"><strong>Required:</strong> .NET SDK 10.0.300+, Git, Python 3, and Emscripten SDK 6.0.7. Activate Emscripten in every new shell; it supplies the Node.js 24+ and LLD 24+ host tools NetWasm uses.</p>
           <a class="text-link" href="https://github.com/zion-sati/NetWasm/blob/main/docs/sdk-quickstart.md">Read the full quickstart <span>↗</span></a>
         </div>
         <div class="terminal">
@@ -217,7 +217,8 @@
             <span>terminal</span>
             <button class="copy-button" type="button" data-copy-target="quickstart-code">Copy</button>
           </div>
-          <pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates
+          <pre id="quickstart-code"><code><span class="prompt">$</span> source ~/emsdk/emsdk_env.sh
+<span class="prompt">$</span> dotnet new install NetWasm.Templates
 <span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
 <span class="prompt">$</span> cd HelloNetWasm
 <span class="prompt">$</span> dotnet run
