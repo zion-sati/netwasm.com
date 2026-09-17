@@ -126,6 +126,22 @@
         </div>
       </section>
 
+      <section class="aot-section section" aria-labelledby="aot-title">
+        <div class="aot-copy">
+          <p class="section-kicker">AOT without the traps</p>
+          <h2 id="aot-title">AOT without linker-annotation whack-a-mole.</h2>
+          <p>NetWasm works out what your program needs at compile time. JSON, Regex, and dependency injection generate ordinary code the compiler can see—so your app does not break because somebody forgot a “do not trim this constructor” annotation three libraries away.</p>
+          <a class="button button-primary" href="https://playground.netwasm.com/">Try the generated-code examples <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="aot-proof" aria-label="How NetWasm keeps AOT dependencies visible">
+          <p class="aot-proof-label">VISIBLE TO THE COMPILER</p>
+          <div><span>01</span><strong>JSON serializers</strong><small>generated code</small></div>
+          <div><span>02</span><strong>Regex engines</strong><small>generated code</small></div>
+          <div><span>03</span><strong>DI activation</strong><small>generated code</small></div>
+          <p class="aot-result"><span>✓</span> Reachability decided at compile time</p>
+        </div>
+      </section>
+
       <section class="feature-section section">
         <div class="section-heading">
           <div>
