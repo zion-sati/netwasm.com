@@ -18,7 +18,7 @@
   <text x="73" y="377" fill="#aab3c1" font-family="Arial, sans-serif" font-size="27">Independent C# → native WebAssembly.</text>
   <rect x="72" y="438" width="392" height="102" rx="12" fill="#10151e" stroke="#30394a"/>
   <text x="97" y="474" fill="#8590a0" font-family="monospace" font-size="15" letter-spacing="2">FINAL COMPONENT</text>
-  <text x="95" y="520" fill="#f4f6fa" font-family="monospace" font-size="45" font-weight="700">88,344 bytes</text>
+  <text x="95" y="520" fill="#f4f6fa" font-family="monospace" font-size="45" font-weight="700">88,419 bytes</text>
   <text x="810" y="500" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="26" font-weight="700">Runtime included.</text>
   <text x="810" y="538" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="26" font-weight="700">Precise GC included.</text>
   <text x="810" y="582" fill="#9b7cff" font-family="monospace" font-size="18">www.netwasm.com</text>
