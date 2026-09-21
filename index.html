@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
-    <meta name="description" content="The new Mono, built for WebAssembly. NetWasm is an independent C# compiler, runtime, CoreLib, SDK, and ecosystem that produces standalone Wasm Components.">
+    <meta name="description" content="The new Mono, built for WebAssembly. NetWasm compiles C# 15 into standalone Wasm Components with its own compiler, runtime, CoreLib, SDK, and ecosystem.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="NetWasm — The new Mono, built for Wasm">
-    <meta property="og:description" content="Independent C# to native WebAssembly. One standalone 88 KB component, runtime and precise GC included.">
+    <meta property="og:description" content="C# 15 to native WebAssembly. One standalone 88 KB component, runtime and precise GC included.">
     <meta property="og:url" content="https://www.netwasm.com/">
     <meta property="og:image" content="https://www.netwasm.com/og-card.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NetWasm — The new Mono, built for Wasm">
-    <meta name="twitter:description" content="Independent C# to native WebAssembly. One standalone 88 KB component, runtime and precise GC included.">
+    <meta name="twitter:description" content="C# 15 to native WebAssembly. One standalone 88 KB component, runtime and precise GC included.">
     <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
     <link rel="canonical" href="https://www.netwasm.com/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
@@ -64,7 +64,7 @@
             <a class="button button-quiet" href="#quickstart">Install locally</a>
           </div>
           <p class="hero-note"><span class="pulse"></span> Live Playground · No account · Your browser does the compiling</p>
-          <p class="hero-hosts"><strong>5 development hosts:</strong> Linux x64 and ARM64 · macOS ARM64 · Windows x64 and ARM64</p>
+          <p class="hero-hosts"><strong>C# 15 · 5 development hosts:</strong> Linux x64 and ARM64 · macOS ARM64 · Windows x64 and ARM64</p>
         </div>
 
         <div class="proof-card" aria-label="NetWasm Hello World artifact size">
@@ -161,9 +161,9 @@
           </article>
           <article class="feature">
             <div class="feature-icon" aria-hidden="true">&lt;/&gt;</div>
-            <p class="feature-index">02 / REAL C#</p>
-            <h3>Keep the language.</h3>
-            <p>Generics, exceptions, async, managed memory, and precise garbage collection compile into the final artifact.</p>
+            <p class="feature-index">02 / C# 15</p>
+            <h3>Modern C#. Native Wasm.</h3>
+            <p>C# 15, generics, exceptions, async, managed memory, and precise garbage collection compile into the final artifact.</p>
           </article>
           <article class="feature">
             <div class="feature-icon" aria-hidden="true">⌁</div>
@@ -202,7 +202,7 @@
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm.Libraries">
             <span class="ecosystem-number">12</span>
             <h3>Focused libraries</h3>
-            <p>LINQ, JSON, Regex, XML, HTTP, Pipelines, Hashing, Memory, and reflection-free dependency injection.</p>
+            <p>LINQ and Async LINQ, Memory, Pipelines, Web Encodings, HTTP, Regex, JSON, XML, Hashing, and reflection-free dependency injection.</p>
             <strong>Explore libraries <span>↗</span></strong>
           </a>
           <a class="ecosystem-card" href="https://github.com/zion-sati/TUnit-NetWasm">
@@ -224,7 +224,7 @@
         <div class="quickstart-copy">
           <p class="section-kicker">Local quickstart</p>
           <h2>Try the real thing.</h2>
-          <p>Install .NET SDK 10.0.300 or newer, create an app, run it locally, and publish a standalone component.</p>
+          <p>Install .NET SDK 10.0.300 or newer, create an app, run it locally, and publish a standalone component. Use the .NET 11 SDK when your source uses C# 15.</p>
           <p class="prereq"><strong>Five supported development hosts:</strong> Linux x64, Linux ARM64, macOS ARM64, Windows x64, and Windows ARM64. NuGet downloads the pinned host tools on first restore and reuses them on later builds. No separate Emscripten, Node.js, Python, Git, LLVM, or Binaryen setup is needed.</p>
           <a class="text-link" href="https://github.com/zion-sati/NetWasm/blob/main/docs/sdk-quickstart.md">Read the full quickstart <span>↗</span></a>
         </div>
@@ -247,7 +247,7 @@
         <div class="final-grid" aria-hidden="true"></div>
         <p class="section-kicker">Stop reading. Compile something.</p>
         <h2>Your C#.<br><span>One Wasm file.</span></h2>
-        <p>The Playground runs the compiler in your browser. Start with Hello World, then try JSON, Regex, dependency injection, LINQ, hashing, or TUnit.</p>
+        <p>The Playground runs the compiler in your browser. Start with the C# 15 tour, then try JSON, Regex, dependency injection, XML, HTTP, LINQ, hashing, or TUnit.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="https://playground.netwasm.com/">Try NetWasm now — no install <span aria-hidden="true">↗</span></a>
           <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm">View source on GitHub</a>
@@ -255,7 +255,7 @@
       </section>
 
       <section class="boundary section" aria-labelledby="boundary-title">
-        <h2 id="boundary-title">NetWasm 0.3 is ready for early adopters.</h2>
+        <h2 id="boundary-title">NetWasm 0.4 is ready for early adopters.</h2>
         <p>NetWasm is pre-1.0, so its API and ABI can evolve. The current profile deliberately excludes runtime reflection, <code>dynamic</code>, runtime assembly loading, managed threading, general managed file APIs, raw sockets, and subprocesses.</p>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md">See the exact support boundary →</a>
       </section>
