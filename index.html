@@ -131,7 +131,7 @@
         <div class="aot-copy">
           <p class="section-kicker">AOT without the traps</p>
           <h2 id="aot-title">AOT without linker-annotation whack-a-mole.</h2>
-          <p>NetWasm works out what your program needs at compile time. JSON, Regex, and dependency injection generate ordinary code the compiler can see—so your app does not break because somebody forgot a “do not trim this constructor” annotation three libraries away.</p>
+          <p>NetWasm works out what your program needs at compile time. JSON, Regex, dependency injection, and structured logging generate ordinary code the compiler can see—so your app does not break because somebody forgot a “do not trim this constructor” annotation three libraries away.</p>
           <a class="button button-primary" href="https://playground.netwasm.com/">Try the generated-code examples <span aria-hidden="true">↗</span></a>
         </div>
         <div class="aot-proof" aria-label="How NetWasm keeps AOT dependencies visible">
@@ -139,6 +139,7 @@
           <div><span>01</span><strong>JSON serializers</strong><small>generated code</small></div>
           <div><span>02</span><strong>Regex engines</strong><small>generated code</small></div>
           <div><span>03</span><strong>DI activation</strong><small>generated code</small></div>
+          <div><span>04</span><strong>Logger messages</strong><small>generated code</small></div>
           <p class="aot-result"><span>✓</span> Reachability decided at compile time</p>
         </div>
       </section>
@@ -200,9 +201,9 @@
 
         <div class="ecosystem-grid">
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm.Libraries">
-            <span class="ecosystem-number">12</span>
+            <span class="ecosystem-number">15</span>
             <h3>Focused libraries</h3>
-            <p>LINQ and Async LINQ, Memory, Pipelines, Web Encodings, HTTP, Regex, JSON, XML, Hashing, and reflection-free dependency injection.</p>
+            <p>LINQ and Async LINQ, Memory, Pipelines, Web Encodings, HTTP, Regex, JSON, XML, Hashing, reflection-free dependency injection, Options, and structured logging.</p>
             <strong>Explore libraries <span>↗</span></strong>
           </a>
           <a class="ecosystem-card" href="https://github.com/zion-sati/TUnit-NetWasm">
@@ -247,7 +248,7 @@
         <div class="final-grid" aria-hidden="true"></div>
         <p class="section-kicker">Stop reading. Compile something.</p>
         <h2>Your C#.<br><span>One Wasm file.</span></h2>
-        <p>The Playground runs the compiler in your browser. Start with the C# 15 tour, then try JSON, Regex, dependency injection, XML, HTTP, LINQ, hashing, or TUnit.</p>
+        <p>The Playground runs the compiler in your browser. Start with the C# 15 tour, then try JSON, Regex, dependency injection, generated logging, XML, HTTP, LINQ, hashing, or TUnit.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="https://playground.netwasm.com/">Try NetWasm now — no install <span aria-hidden="true">↗</span></a>
           <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm">View source on GitHub</a>
