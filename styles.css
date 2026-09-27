@@ -182,6 +182,9 @@ code, pre { font-family: var(--mono); }
 }
 .button:hover { transform: translateY(-2px); }
 .button-small { min-height: 39px; padding: 0 15px; border-color: var(--text); }
+.github-star { border-color: var(--accent-bright); background: var(--accent-bright); color: white; }
+.github-star:hover { background: var(--accent); }
+.github-star svg { width: 17px; height: 17px; fill: currentColor; }
 .playground-link i { width: 6px; height: 6px; border-radius: 50%; background: #2dcf7f; box-shadow: 0 0 0 3px color-mix(in srgb, #2dcf7f 18%, transparent); }
 .button-primary {
   border-color: var(--accent-bright);
@@ -536,6 +539,8 @@ footer > p { color: var(--muted); font-size: 13px; }
 @media (max-width: 650px) {
   .site-header { width: min(calc(100% - 28px), var(--max)); }
   .header-actions .button { display: none; }
+  .header-actions .github-star { width: 40px; padding: 0; display: inline-flex; }
+  .github-star span { display: none; }
   .hero, .section, footer { width: min(calc(100% - 28px), var(--max)); }
   .hero { min-height: 0; padding: 70px 0 80px; gap: 55px; }
   .hero-glow { width: 100vw; left: -14px; }
