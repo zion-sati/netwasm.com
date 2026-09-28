@@ -9,5 +9,5 @@ HTTP server, for example:
 python3 -m http.server 8080
 ```
 
-GitHub Pages publishes the repository root on `main`. The checked-in `CNAME`
-keeps the custom domain attached.
+GitHub Pages deploys the explicit public-file inventory through the reviewed
+Actions workflow. The checked-in `CNAME` keeps the custom domain attached.
