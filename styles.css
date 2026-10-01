@@ -313,6 +313,24 @@ code, pre { font-family: var(--mono); }
 .manifesto p::before { content: "×"; margin-right: 10px; color: var(--accent); font-size: 1.5em; }
 
 .section { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; padding: clamp(90px, 12vw, 160px) 0; }
+.size-comparison { border-bottom: 1px solid var(--line); }
+.size-comparison .section-heading h2 span { color: var(--accent); }
+.comparison-chart {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #080b10;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  transition: transform .2s ease, border-color .2s ease;
+}
+.comparison-chart:hover { transform: translateY(-4px); border-color: var(--accent); }
+.comparison-chart:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.comparison-chart img { display: block; width: 100%; height: auto; }
+.comparison-note { margin: 20px 0 0; color: var(--muted); font-family: var(--mono); font-size: 12px; }
+.comparison-note a { color: var(--accent-bright); font-weight: 700; text-decoration: none; }
+.comparison-note a:hover { text-decoration: underline; }
 .origin {
   display: grid;
   grid-template-columns: 1fr 1fr;

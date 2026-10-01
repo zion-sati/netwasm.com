@@ -102,6 +102,20 @@
         <p>NO APP DLLs.</p>
       </section>
 
+      <section class="size-comparison section" aria-labelledby="size-comparison-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">AOT vs AOT</p>
+            <h2 id="size-comparison-title">Native Wasm size.<br><span>Measured, not promised.</span></h2>
+          </div>
+          <p>A Release build of <code>Console.WriteLine(42)</code> is 82.5 KB with NetWasm. The same source compiled with .NET 11 RC1 Blazor WebAssembly AOT is 14.58 MB, or 181 times larger.</p>
+        </div>
+        <a class="comparison-chart" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer" aria-label="Read the reproducible AOT size comparison methodology">
+          <img src="aot-console42-size.svg" width="960" height="548" alt="AOT Wasm size comparison: NetWasm is 82.5 KB, Blazor .NET 10 is 11.71 MB, and Blazor .NET 11 RC1 is 14.58 MB. NetWasm is 181 times smaller than the .NET 11 result.">
+        </a>
+        <p class="comparison-note">Uncompressed Wasm. Binary units: 1 KB = 1,024 bytes and 1 MB = 1,024 KB. <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer">Reproduce the comparison <span aria-hidden="true">↗</span></a></p>
+      </section>
+
       <section class="origin section" aria-label="NetWasm independence">
         <div class="origin-lead">
           <p class="section-kicker">An independent .NET again</p>
