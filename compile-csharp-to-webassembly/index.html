@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+    <meta name="description" content="Compile a C# application to a small, standalone WebAssembly component with NetWasm. Install the template, run locally, and publish one .wasm file.">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How to compile C# to WebAssembly with NetWasm">
+    <meta property="og:description" content="A complete C# to WebAssembly quickstart using the .NET CLI and NetWasm.">
+    <meta property="og:url" content="https://www.netwasm.com/compile-csharp-to-webassembly/">
+    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to compile C# to WebAssembly with NetWasm">
+    <meta name="twitter:description" content="A complete C# to WebAssembly quickstart using the .NET CLI and NetWasm.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <link rel="canonical" href="https://www.netwasm.com/compile-csharp-to-webassembly/">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
+    <title>How to compile C# to WebAssembly with NetWasm</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "TechArticle",
+            "headline": "How to compile C# to WebAssembly with NetWasm",
+            "description": "Compile a C# application to a small, standalone WebAssembly component with the .NET CLI and NetWasm.",
+            "url": "https://www.netwasm.com/compile-csharp-to-webassembly/",
+            "mainEntityOfPage": "https://www.netwasm.com/compile-csharp-to-webassembly/",
+            "about": { "@id": "https://www.netwasm.com/#software" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://www.netwasm.com/#software",
+            "name": "NetWasm",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Linux, macOS, Windows",
+            "description": "NetWasm compiles C# and .NET CIL to small, standalone WebAssembly modules and WASI components.",
+            "url": "https://www.netwasm.com/",
+            "codeRepository": "https://github.com/zion-sati/NetWasm"
+          }
+        ]
+      }
+    </script>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../site.js" defer></script>
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="NetWasm home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M7 29V11l13 18V11l13 18V11"/>
+        </svg>
+        <span>NetWasm</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="../">Home</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
+        <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change color theme">
+          <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg>
+        </button>
+        <a class="button button-small playground-link" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer"><i></i> Try it now <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="guide-hero">
+        <p class="section-kicker">C# to WebAssembly quickstart</p>
+        <h1>Compile C# to WebAssembly with NetWasm.</h1>
+        <p>NetWasm takes the CIL produced by Roslyn and compiles the reachable program into WebAssembly. The published <code>.wasm</code> includes the application, the runtime support it uses, and a precise garbage collector. It does not ship CoreCLR, Mono, <code>dotnet.js</code>, or separate application DLLs.</p>
+        <div class="guide-actions">
+          <a class="button button-primary" href="#compile">Compile locally</a>
+          <a class="button button-quiet" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">Try it in your browser <span aria-hidden="true">↗</span></a>
+        </div>
+      </header>
+
+      <div class="guide-layout">
+        <aside class="guide-toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <a href="#what-you-get">What you get</a>
+          <a href="#requirements">Requirements</a>
+          <a href="#compile">Compile C# to Wasm</a>
+          <a href="#run">Run the component</a>
+          <a href="#browser">Compile in a browser</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#limits">Current limits</a>
+          <a href="#questions">Questions</a>
+        </aside>
+
+        <article class="guide-content">
+          <section id="what-you-get">
+            <h2>What you get</h2>
+            <p>A normal NetWasm project uses the .NET CLI. You write C#, restore NuGet packages, build, run tests, and publish using familiar commands. The difference is the target platform and runtime contract.</p>
+            <ul>
+              <li>Roslyn compiles C# to ordinary CIL.</li>
+              <li>NetWasm performs closed-world analysis and compiles reachable CIL to Wasm.</li>
+              <li>Only reachable code, data, generics, runtime support, and host imports are retained.</li>
+              <li>The default executable output is a standalone wasm32 WASI Preview 2 component.</li>
+            </ul>
+            <div class="guide-callout">
+              <strong>Measured baseline</strong>
+              <p>A clean Release build of <code>Console.WriteLine(42)</code> produces an 84,513-byte uncompressed component. That includes the C# application, runtime, and precise GC. Read the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">reproduction methodology</a>.</p>
+            </div>
+          </section>
+
+          <section id="requirements">
+            <h2>Requirements</h2>
+            <p>Install .NET SDK 10.0.303 or newer. Use the .NET 11 SDK when your source uses C# 15. NetWasm supports Linux x64 and ARM64, macOS ARM64, and Windows x64 and ARM64 as development hosts.</p>
+            <p>The NetWasm packages restore their pinned build tools through NuGet. An ordinary application does not require a separate Emscripten, Node.js, Python, Git, LLVM, or Binaryen installation.</p>
+          </section>
+
+          <section id="compile">
+            <h2>Compile C# to Wasm</h2>
+            <p>Install the project templates, create an application, and run it:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar">
+                <span class="traffic"><i></i><i></i><i></i></span>
+                <span>terminal</span>
+                <button class="copy-button" type="button" data-copy-target="guide-compile-code">Copy</button>
+              </div>
+              <pre id="guide-compile-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates
+<span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
+<span class="prompt">$</span> cd HelloNetWasm
+<span class="prompt">$</span> dotnet run
+<span class="output">42</span></code></pre>
+            </div>
+            <p>Publish an optimized component:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar">
+                <span class="traffic"><i></i><i></i><i></i></span>
+                <span>terminal</span>
+                <button class="copy-button" type="button" data-copy-target="guide-publish-code">Copy</button>
+              </div>
+              <pre id="guide-publish-code"><code><span class="prompt">$</span> dotnet publish -c Release -o publish/local</code></pre>
+            </div>
+            <p>The resulting component is <code>publish/local/HelloNetWasm.wasm</code>.</p>
+          </section>
+
+          <section id="run">
+            <h2>Run the component</h2>
+            <p>Run the published component with a compatible WASI Preview 2 host. For example, with Wasmtime:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar">
+                <span class="traffic"><i></i><i></i><i></i></span>
+                <span>terminal</span>
+                <button class="copy-button" type="button" data-copy-target="guide-run-code">Copy</button>
+              </div>
+              <pre id="guide-run-code"><code><span class="prompt">$</span> wasmtime run publish/local/HelloNetWasm.wasm
+<span class="output">42</span></code></pre>
+            </div>
+            <p>The deployment machine needs a compatible WebAssembly host. It does not need .NET or NetWasm installed.</p>
+          </section>
+
+          <section id="browser">
+            <h2>Compile C# to WebAssembly in your browser</h2>
+            <p>The <a href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">NetWasm Playground</a> runs the compiler locally in the browser. You can edit C#, compile it, run the result, inspect diagnostics, compare optimization settings, and download the component without sending the source to a compilation server.</p>
+            <p>Browser deployment uses a JavaScript host adapter around the same compiled program. NetWasm is not Blazor and does not require a Blazor UI framework.</p>
+          </section>
+
+          <section id="how-it-works">
+            <h2>How the C# to WebAssembly pipeline works</h2>
+            <ol>
+              <li><strong>C# to CIL:</strong> Roslyn handles C# syntax, binding, diagnostics, and standard CIL generation.</li>
+              <li><strong>Closed-world analysis:</strong> NetWasm starts from the application entry points and follows reachable managed code.</li>
+              <li><strong>CIL to Wasm:</strong> The compiler specializes concrete generics, lays out managed data, and emits WebAssembly instructions.</li>
+              <li><strong>Runtime linking:</strong> Required CoreLib and runtime support are linked into the program. Unreachable support stays out.</li>
+              <li><strong>Component packaging:</strong> The default publish path wraps the core module as a WASI Preview 2 component.</li>
+            </ol>
+            <p>This is ahead-of-time compilation. NetWasm does not interpret CIL at runtime and does not embed a general desktop CLR in the output.</p>
+          </section>
+
+          <section id="limits">
+            <h2>Current limits</h2>
+            <p>NetWasm is pre-1.0 and deliberately implements a smaller .NET profile. Runtime reflection, <code>dynamic</code>, runtime assembly loading, and managed threading are outside that profile. Existing NuGet packages work only when their reachable APIs and runtime assumptions fit the supported surface.</p>
+            <p>See the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">member-level support inventory and current limitations</a> before porting a substantial application.</p>
+          </section>
+
+          <section id="questions">
+            <h2>Common questions</h2>
+            <h3>Does C# compile directly to WebAssembly?</h3>
+            <p>Roslyn first compiles C# to CIL. NetWasm then compiles the reachable CIL and runtime support to WebAssembly. The complete process is ahead of time and produces Wasm instructions rather than interpreted CIL.</p>
+
+            <h3>Does the output require .NET?</h3>
+            <p>No desktop .NET runtime is required at deployment. The Wasm artifact contains the runtime support selected for the application. A compatible WebAssembly host is still required.</p>
+
+            <h3>Is NetWasm the same as Blazor WebAssembly?</h3>
+            <p>No. NetWasm is a compiler, runtime, CoreLib, SDK, and target profile. It can publish standalone WASI components and browser-hosted programs without requiring Blazor.</p>
+
+            <h3>Can I use existing .NET libraries?</h3>
+            <p>Libraries can target <code>netwasm0.1</code> alongside desktop .NET. Compatibility depends on the reachable API surface, not merely on whether a package targets another .NET framework. NetWasm also publishes focused ports for common libraries.</p>
+          </section>
+
+          <div class="guide-next">
+            <p class="section-kicker">Ready to try it?</p>
+            <h2>Compile your C# program.</h2>
+            <div class="guide-actions">
+              <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">Open the Playground <span aria-hidden="true">↗</span></a>
+              <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/blob/main/docs/sdk-quickstart.md" target="_blank" rel="noopener noreferrer">Read the SDK quickstart <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      <a class="brand" href="../" aria-label="NetWasm home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg>
+        <span>NetWasm</span>
+      </a>
+      <p>Compile C# to WebAssembly at native Wasm size.</p>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Documentation</a>
+      </div>
+    </footer>
+  </body>
+</html>
