@@ -60,6 +60,8 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="../">Home</a>
+        <a href="../guides/csharp-web-worker/">C# Web Workers</a>
+        <a href="../blog/netwasm-0-6-0/">NetWasm 0.6</a>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
         <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
@@ -108,7 +110,7 @@
             </ul>
             <div class="guide-callout">
               <strong>Measured baseline</strong>
-              <p>A clean Release build of <code>Console.WriteLine(42)</code> produces an 84,513-byte uncompressed component. That includes the C# application, runtime, and precise GC. Read the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">reproduction methodology</a>.</p>
+              <p>A clean NetWasm 0.6.0 Release build of <code>Console.WriteLine(42)</code> produces an 84,653-byte uncompressed component. That includes the C# application, runtime, and precise GC. Read the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">reproduction methodology</a>.</p>
             </div>
           </section>
 
@@ -127,7 +129,7 @@
                 <span>terminal</span>
                 <button class="copy-button" type="button" data-copy-target="guide-compile-code">Copy</button>
               </div>
-              <pre id="guide-compile-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates
+              <pre id="guide-compile-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
 <span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
 <span class="prompt">$</span> cd HelloNetWasm
 <span class="prompt">$</span> dotnet run
@@ -164,6 +166,7 @@
             <h2>Compile C# to WebAssembly in your browser</h2>
             <p>The <a href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">NetWasm Playground</a> runs the compiler locally in the browser. You can edit C#, compile it, run the result, inspect diagnostics, compare optimization settings, and download the component without sending the source to a compilation server.</p>
             <p>Browser deployment uses a JavaScript host adapter around the same compiled program. NetWasm is not Blazor and does not require a Blazor UI framework.</p>
+            <p>NetWasm 0.6.0 can also publish a C# application as a browser Web Worker with a generated JavaScript client. Follow the <a href="../guides/csharp-web-worker/">C# Web Workers guide</a> for a complete example.</p>
           </section>
 
           <section id="how-it-works">
@@ -181,7 +184,7 @@
           <section id="limits">
             <h2>Current limits</h2>
             <p>NetWasm is pre-1.0 and deliberately implements a smaller .NET profile. Runtime reflection, <code>dynamic</code>, runtime assembly loading, and managed threading are outside that profile. Existing NuGet packages work only when their reachable APIs and runtime assumptions fit the supported surface.</p>
-            <p>See the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">member-level support inventory and current limitations</a> before porting a substantial application.</p>
+            <p>See the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">support inventory and current limitations</a> before porting a substantial application.</p>
           </section>
 
           <section id="questions">
@@ -197,6 +200,12 @@
 
             <h3>Can I use existing .NET libraries?</h3>
             <p>Libraries can target <code>netwasm0.1</code> alongside desktop .NET. Compatibility depends on the reachable API surface, not merely on whether a package targets another .NET framework. NetWasm also publishes focused ports for common libraries.</p>
+
+            <h3>Can a startup or small company use NetWasm for free?</h3>
+            <p>Yes, when the organization qualifies under the Community License: it has fewer than 250 employees and less than US$10 million in annual revenue, is not a government entity, and meets the affiliate-counting rules. It may use the tooling at no charge and sell, license, host, deploy, or distribute unlimited generated applications and output. Bundling NetWasm into an SDK or IDE, redistributing it as a commercial feature, or providing compilation as a service requires a separate agreement. Read the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/licensing.md" target="_blank" rel="noopener noreferrer">licensing guide and complete license terms</a>.</p>
+
+            <h3>Does NetWasm support open-source projects?</h3>
+            <p>Yes. The Community License permits qualifying open-source work at no charge when the project's complete source is public under an OSI-approved license, the work does not produce a proprietary third-party deliverable, and it is not specifically paid work or primarily undertaken for direct commercial advantage. Contributions to official NetWasm projects also have an explicit free-use grant. NetWasm compiler and developer tooling are source-available under the Community License; CoreLib, runtime components, templates, generated support code, and the focused library ports are MIT licensed unless an upstream notice says otherwise.</p>
           </section>
 
           <div class="guide-next">
@@ -219,6 +228,7 @@
       <p>Compile C# to WebAssembly at native Wasm size.</p>
       <div class="footer-links">
         <a href="../">Home</a>
+        <a href="../guides/csharp-web-worker/">C# Web Workers</a>
         <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Documentation</a>
       </div>

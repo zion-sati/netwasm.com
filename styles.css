@@ -494,6 +494,7 @@ code, pre { font-family: var(--mono); }
   transition: transform .2s ease, border-color .2s ease;
 }
 .ecosystem-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+.ecosystem-card-wide { grid-column: 1 / -1; min-height: 300px; }
 .ecosystem-number { color: var(--accent); font-family: var(--mono); font-size: 64px; font-weight: 770; letter-spacing: -.07em; }
 .ecosystem-card h3 { margin-top: auto; font-size: 27px; }
 .ecosystem-card p { margin: 0 0 28px; color: var(--muted); }
@@ -614,6 +615,7 @@ footer > p { color: var(--muted); font-size: 13px; }
   .origin { grid-template-columns: 1fr; }
   .ecosystem-grid { grid-template-columns: 1fr; }
   .ecosystem-card { min-height: 310px; }
+  .ecosystem-card-wide { grid-column: auto; }
   .boundary { grid-template-columns: 1fr; gap: 15px; }
   .guide-layout { grid-template-columns: 1fr; }
   .guide-toc { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 22px; border: 1px solid var(--line); border-radius: 12px; }
