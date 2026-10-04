@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+    <meta name="description" content="NetWasm 0.6.0 adds C# Web Workers, Wasm interop, bounded attributes and expression trees, richer diagnostics, and library compatibility fixes.">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="NetWasm 0.6.0: C# Web Workers, Wasm Interop and Library Improvements">
+    <meta property="og:description" content="Publish C# Web Workers, cross explicit JavaScript, WIT, and native C boundaries, and run more package workloads.">
+    <meta property="og:url" content="https://www.netwasm.com/blog/netwasm-0-6-0/">
+    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NetWasm 0.6.0: C# Web Workers, Wasm Interop and Library Improvements">
+    <meta name="twitter:description" content="Publish C# Web Workers, cross explicit JavaScript, WIT, and native C boundaries, and run more package workloads.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <link rel="canonical" href="https://www.netwasm.com/blog/netwasm-0-6-0/">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="../../favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" sizes="180x180">
+    <title>NetWasm 0.6.0: C# Web Workers, Wasm Interop and Library Improvements</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "NetWasm 0.6.0: C# Web Workers, Wasm Interop and Library Improvements",
+        "description": "NetWasm 0.6.0 adds C# Web Workers, Wasm interop, and broader library compatibility.",
+        "datePublished": "2026-10-05",
+        "dateModified": "2026-10-05",
+        "url": "https://www.netwasm.com/blog/netwasm-0-6-0/",
+        "mainEntityOfPage": "https://www.netwasm.com/blog/netwasm-0-6-0/"
+      }
+    </script>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="../../site.js" defer></script>
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <nav aria-label="Primary navigation">
+        <a href="../../">Home</a>
+        <a href="../../compile-csharp-to-webassembly/">Compile C# to Wasm</a>
+        <a href="../../guides/csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change color theme"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg></button>
+        <a class="button button-small playground-link" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer"><i></i> Try it now <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="guide-hero">
+        <p class="section-kicker">Released 5 October 2026</p>
+        <h1>NetWasm 0.6.0</h1>
+        <p>C# Web Workers, explicit Wasm interop, and the compiler and runtime work needed by more real package workloads—all within NetWasm's closed-world, pay-as-you-use model.</p>
+        <div class="guide-actions">
+          <a class="button button-primary" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.6.0" target="_blank" rel="noopener noreferrer">Get NetWasm 0.6.0 <span aria-hidden="true">↗</span></a>
+          <a class="button button-quiet" href="../../guides/csharp-web-worker/">Build a C# Web Worker</a>
+        </div>
+      </header>
+
+      <div class="guide-layout">
+        <aside class="guide-toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <a href="#workers">C# Web Workers</a>
+          <a href="#interop">Wasm interop</a>
+          <a href="#libraries">Library support</a>
+          <a href="#diagnostics">Diagnostics and fixes</a>
+          <a href="#upgrade">Upgrade</a>
+          <a href="#licensing">Community License</a>
+          <a href="#size">Measured size</a>
+        </aside>
+
+        <article class="guide-content">
+          <section id="workers">
+            <h2>Publish C# as a Web Worker</h2>
+            <p>NetWasm 0.6.0 adds WIT and JSExport worker templates. A published worker gets its own Wasm instance and managed heap, plus a generated JavaScript client whose methods return Promises.</p>
+            <ul>
+              <li>Use a WIT worker for a portable, language-neutral component contract.</li>
+              <li>Use a JSExport worker when JavaScript should call named managed exports directly.</li>
+              <li>Send progress notifications, propagate managed failures, and close workers with defined disposal and termination behavior.</li>
+            </ul>
+            <p>The <a href="../../guides/csharp-web-worker/">C# Web Workers tutorial</a> takes a project from template to static deployment.</p>
+          </section>
+
+          <section id="interop">
+            <h2>Cross explicit Wasm boundaries</h2>
+            <p>Browser applications can bundle their own JavaScript modules for reachable <code>[JSImport]</code> calls and expose bounded <code>[JSExport]</code> entry points. WIT workers describe a portable application contract.</p>
+            <p>Static native interop can link supported C APIs from Wasm <code>.a</code> archives. The qualified profile covers common scalar, pointer, by-reference, struct, union, counted-array, UTF-8, <code>SafeHandle</code> input, and callback shapes. Dynamic native loading and a general C++ ABI remain outside this release.</p>
+          </section>
+
+          <section id="libraries">
+            <h2>Run more library patterns</h2>
+            <p>Bounded custom-attribute queries now support framework and user-defined attributes without retaining a general runtime metadata database. The compiler requires statically bounded targets and attribute filters, preserving pay-as-you-use output.</p>
+            <p>A bounded interpreted expression-tree profile adds equality, property access, calls, construction, invocation, conversions, and lambdas. Together these capabilities unblock the core <code>RuleFor(...).Validate(...)</code> patterns used by the NetWasm port of FluentValidation.</p>
+            <p>NetWasm 0.6.0 also adds the date/time parsing and exception-region fixes needed by <code>System.Formats.Cbor</code>, secure random-number generation, the portable <code>Interlocked</code> family for the single-reactor runtime, and more compatibility APIs.</p>
+          </section>
+
+          <section id="diagnostics">
+            <h2>See failures where they happen</h2>
+            <p>Debug builds can include managed stack traces with portable-PDB source files and line numbers. Release builds omit that instrumentation unless <code>NetWasmManagedStackTrace=true</code> is explicitly selected.</p>
+            <p>Hosts preserve managed exception classification and available messages even without rich stack traces. <code>dotnet run</code> now propagates guest exit codes and host failures, and unobserved task diagnostics retain the original exception details.</p>
+            <p>The release also fixes mutable struct aliasing in exception filters, protected loops in exception regions, open generic layouts in validation rules, package metadata conversion, analyzer target selection, and several SDK packaging edges.</p>
+          </section>
+
+          <section id="upgrade">
+            <h2>Upgrade to 0.6.0</h2>
+            <p>Install the 0.6.0 templates and update NetWasm package references together. The target framework remains <code>netwasm0.1</code>.</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="release-upgrade-code">Copy</button></div>
+              <pre id="release-upgrade-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
+<span class="prompt">$</span> dotnet restore
+<span class="prompt">$</span> dotnet publish -c Release</code></pre>
+            </div>
+            <p>Republish browser deployments so their generated host files match the 0.6.0 component contracts. NetWasm is still pre-1.0; review the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">support boundary</a> when bringing in a new package.</p>
+          </section>
+
+          <section id="licensing">
+            <h2>Free for qualifying small organizations</h2>
+            <p>A non-government organization with fewer than 250 employees across its affiliates and consolidated annual revenue below US$10 million may use NetWasm tooling at no charge for commercial development, production builds, and creating products or services.</p>
+            <p>Qualifying organizations may sell, license, host, deploy, or distribute unlimited generated applications and output without royalties or additional fees. Commercial redistribution of NetWasm itself, bundling it into an SDK or IDE, or providing compilation through a hosted service requires a separate agreement. See the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/licensing.md" target="_blank" rel="noopener noreferrer">Community License guide and complete terms</a>.</p>
+            <p>Personal non-commercial use, education, qualifying open-source work, and contributions to official NetWasm projects are also free. The compiler and developer tooling are source-available under the Community License. CoreLib, runtime components, templates, generated support code, and the focused library ports are MIT licensed unless an upstream notice says otherwise.</p>
+          </section>
+
+          <section id="size">
+            <h2>Pay-as-you-use remains measurable</h2>
+            <p>The optimized Release <code>Console.WriteLine(42)</code> component is <strong>84,653 bytes (82.7 KiB)</strong>, uncompressed and including the application, runtime, precise GC, and WASI component wrapper.</p>
+            <p>That is 140 bytes (+0.17%) above NetWasm 0.5.0's 84,513-byte result. The increase comes from <code>ArgumentNullException.ThrowIfNull</code> preserving the caller-expression parameter name through <code>ParamName</code> and <code>Message</code>, which is observable .NET behavior. Rich stack-trace instrumentation remains absent from this Release artifact.</p>
+            <p>Qualification covered 2,259 compiler and runtime cases plus package-consumer and host validation. See the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">reproducible size methodology</a> and the <a href="https://github.com/zion-sati/NetWasm/releases/tag/v0.6.0" target="_blank" rel="noopener noreferrer">complete release notes</a>.</p>
+          </section>
+
+          <div class="guide-next">
+            <p class="section-kicker">NetWasm 0.6.0</p>
+            <h2>Compile the next C# program.</h2>
+            <div class="guide-actions">
+              <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">Open the Playground <span aria-hidden="true">↗</span></a>
+              <a class="button button-quiet" href="../../compile-csharp-to-webassembly/">Install and publish locally</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <p>C# at native Wasm size.</p>
+      <div class="footer-links">
+        <a href="../../">Home</a>
+        <a href="../../guides/csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+    <meta name="description" content="Publish C# as a browser Web Worker with NetWasm 0.6.0. Choose WIT or JSExport, call the generated JavaScript client, and deploy it on a static host.">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Run C# in a Web Worker with NetWasm">
+    <meta property="og:description" content="Build a C# Web Worker with a generated Promise-based JavaScript client and an explicit Wasm boundary.">
+    <meta property="og:url" content="https://www.netwasm.com/guides/csharp-web-worker/">
+    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Run C# in a Web Worker with NetWasm">
+    <meta name="twitter:description" content="Build a C# Web Worker with a generated Promise-based JavaScript client and an explicit Wasm boundary.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <link rel="canonical" href="https://www.netwasm.com/guides/csharp-web-worker/">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="../../favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" sizes="180x180">
+    <title>Run C# in a Web Worker with NetWasm</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Run C# in a Web Worker with NetWasm",
+        "description": "Publish C# as a browser Web Worker with a generated JavaScript client.",
+        "datePublished": "2026-10-05",
+        "dateModified": "2026-10-05",
+        "url": "https://www.netwasm.com/guides/csharp-web-worker/",
+        "mainEntityOfPage": "https://www.netwasm.com/guides/csharp-web-worker/"
+      }
+    </script>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="../../site.js" defer></script>
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../../" aria-label="NetWasm home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg>
+        <span>NetWasm</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="../../">Home</a>
+        <a href="../../compile-csharp-to-webassembly/">Compile C# to Wasm</a>
+        <a href="../../blog/netwasm-0-6-0/">NetWasm 0.6</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change color theme">
+          <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg>
+        </button>
+        <a class="button button-small playground-link" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.6.0" target="_blank" rel="noopener noreferrer">Get NetWasm 0.6 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="guide-hero">
+        <p class="section-kicker">NetWasm 0.6.0 guide</p>
+        <h1>Run C# in a Web Worker.</h1>
+        <p>Publish C# behind an asynchronous worker boundary, keep the page responsive while it runs, and call it through a generated JavaScript client. Each worker owns its Wasm instance and managed heap.</p>
+        <div class="guide-actions">
+          <a class="button button-primary" href="#create">Create a worker</a>
+          <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/blob/main/docs/web-workers.md" target="_blank" rel="noopener noreferrer">SDK reference <span aria-hidden="true">↗</span></a>
+        </div>
+      </header>
+
+      <div class="guide-layout">
+        <aside class="guide-toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <a href="#choose">Choose a boundary</a>
+          <a href="#create">Create and publish</a>
+          <a href="#call">Call from JavaScript</a>
+          <a href="#failures">Handle failures</a>
+          <a href="#deploy">Deploy</a>
+          <a href="#limits">Current limits</a>
+        </aside>
+
+        <article class="guide-content">
+          <section id="choose">
+            <h2>Choose the contract your page needs</h2>
+            <p>NetWasm 0.6.0 ships two worker templates. Both generate the worker bootstrap, deployment manifest, and Promise-based page client.</p>
+            <ul>
+              <li><strong>WIT worker:</strong> choose <code>--worker wit</code> for a language-neutral interface described by WIT and packaged as a WebAssembly Component.</li>
+              <li><strong>JSExport worker:</strong> choose <code>--worker jsexport</code> when JavaScript should call bounded managed methods marked with <code>[JSExport]</code>.</li>
+            </ul>
+            <p>A worker does not make a calculation inherently faster. It moves that work off the page's event loop so the interface can remain responsive.</p>
+          </section>
+
+          <section id="create">
+            <h2>Create and publish the worker</h2>
+            <p>Install the 0.6.0 templates, create either worker shape, and publish the included working page:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="worker-create-code">Copy</button></div>
+              <pre id="worker-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
+<span class="prompt">$</span> dotnet new netwasm-app -n ReportWorker --worker jsexport
+<span class="comment"># Or use: --worker wit</span>
+<span class="prompt">$</span> cd ReportWorker
+<span class="prompt">$</span> dotnet publish -c Release</code></pre>
+            </div>
+            <p>The static deployment is written to <code>bin/Release/netwasm0.1/publish</code>. It contains <code>index.html</code>, the compiled worker, its host files, and <code>browser/ReportWorker.worker-client.mjs</code>.</p>
+          </section>
+
+          <section id="call">
+            <h2>Call C# from the page</h2>
+            <p>Import <code>createWorker</code> from the generated client. Creation waits until the worker is ready, and every exported call returns a Promise.</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>page.mjs</span><button class="copy-button" type="button" data-copy-target="worker-client-code">Copy</button></div>
+              <pre id="worker-client-code"><code>import { createWorker } from "./browser/ReportWorker.worker-client.mjs";
+
+const worker = await createWorker({
+  onNotification({ operation, arguments: values }) {
+    console.log(operation, ...values);
+  },
+});
+
+try {
+  const result = await worker.run(5);
+  document.querySelector("#result").textContent = String(result);
+} finally {
+  await worker.dispose();
+}</code></pre>
+            </div>
+            <p>The JSExport template exposes the declared export name directly, so the example above calls <code>worker.run(5)</code>. The WIT template exposes its qualified contract name, such as <code>worker["netwasm:worker-template/work@1.0.0/run"]</code>.</p>
+          </section>
+
+          <section id="failures">
+            <h2>Handle failures and lifecycle</h2>
+            <p>If an exported <code>Task</code> or <code>ValueTask</code> faults, the Promise rejects with the managed message. <code>error.managed</code> carries the available type, message, and managed stack trace. Debug builds include source files and line numbers when portable PDB information is available.</p>
+            <ul>
+              <li><code>dispose()</code> lets already accepted calls finish before the worker closes.</li>
+              <li><code>terminate()</code> stops immediately and rejects pending calls.</li>
+              <li>Calls made after either operation are rejected.</li>
+            </ul>
+            <p>Validate page input before calling the worker and catch rejected Promises where the page can show a useful message. One failed managed call does not make the worker unusable.</p>
+          </section>
+
+          <section id="deploy">
+            <h2>Serve the published files</h2>
+            <p>Serve the complete publish directory from an ordinary static HTTP host. Open <code>index.html</code> through HTTP rather than directly from the filesystem so JavaScript modules and Wasm load with normal browser rules.</p>
+            <p>The worker cannot access the page DOM. Return values to the caller or use generated notifications to ask the page to update its interface.</p>
+          </section>
+
+          <section id="limits">
+            <h2>Current limits</h2>
+            <p>Each worker has a separate managed heap. Managed references do not cross between the page and worker, and workers do not share managed objects with each other. The boundary carries values described by WIT or the supported JSExport contract.</p>
+            <p>Worker projects are browser deployments and cannot be launched with <code>dotnet run</code>. Publish them and use the generated page client. The <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/web-workers.md" target="_blank" rel="noopener noreferrer">complete SDK guide</a> documents application JavaScript imports, notifications, WIT properties, and the exact boundary.</p>
+          </section>
+
+          <div class="guide-next">
+            <p class="section-kicker">Ready to build?</p>
+            <h2>Put C# behind a worker boundary.</h2>
+            <div class="guide-actions">
+              <a class="button button-primary" href="#create">Use the 0.6.0 template</a>
+              <a class="button button-quiet" href="../../blog/netwasm-0-6-0/">Read the release notes</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <p>C# at native Wasm size.</p>
+      <div class="footer-links">
+        <a href="../../">Home</a>
+        <a href="../../compile-csharp-to-webassembly/">Compile C# to WebAssembly</a>
+        <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </footer>
+  </body>
+</html>
