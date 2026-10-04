@@ -95,11 +95,11 @@
             <p>Install the 0.6.0 templates, create either worker shape, and publish the included working page:</p>
             <div class="terminal guide-terminal">
               <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="worker-create-code">Copy</button></div>
-              <pre id="worker-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
+              <!--email_off--><pre id="worker-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
 <span class="prompt">$</span> dotnet new netwasm-app -n ReportWorker --worker jsexport
 <span class="comment"># Or use: --worker wit</span>
 <span class="prompt">$</span> cd ReportWorker
-<span class="prompt">$</span> dotnet publish -c Release</code></pre>
+<span class="prompt">$</span> dotnet publish -c Release</code></pre><!--/email_off-->
             </div>
             <p>The static deployment is written to <code>bin/Release/netwasm0.1/publish</code>. It contains <code>index.html</code>, the compiled worker, its host files, and <code>browser/ReportWorker.worker-client.mjs</code>.</p>
           </section>
@@ -124,7 +124,7 @@ try {
   await worker.dispose();
 }</code></pre>
             </div>
-            <p>The JSExport template exposes the declared export name directly, so the example above calls <code>worker.run(5)</code>. The WIT template exposes its qualified contract name, such as <code>worker["netwasm:worker-template/work@1.0.0/run"]</code>.</p>
+            <p>The JSExport template exposes the declared export name directly, so the example above calls <code>worker.run(5)</code>. The WIT template exposes its qualified contract name, such as <!--email_off--><code>worker["netwasm:worker-template/work@1.0.0/run"]</code><!--/email_off-->.</p>
           </section>
 
           <section id="failures">

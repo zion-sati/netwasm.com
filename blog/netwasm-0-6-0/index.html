@@ -111,9 +111,9 @@
             <p>Install the 0.6.0 templates and update NetWasm package references together. The target framework remains <code>netwasm0.1</code>.</p>
             <div class="terminal guide-terminal">
               <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="release-upgrade-code">Copy</button></div>
-              <pre id="release-upgrade-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
+              <!--email_off--><pre id="release-upgrade-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
 <span class="prompt">$</span> dotnet restore
-<span class="prompt">$</span> dotnet publish -c Release</code></pre>
+<span class="prompt">$</span> dotnet publish -c Release</code></pre><!--/email_off-->
             </div>
             <p>Republish browser deployments so their generated host files match the 0.6.0 component contracts. NetWasm is still pre-1.0; review the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">support boundary</a> when bringing in a new package.</p>
           </section>
