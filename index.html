@@ -8,12 +8,12 @@
     <meta name="description" content="Compile C# and .NET CIL to small, standalone WebAssembly modules and WASI components with NetWasm's independent compiler, runtime, CoreLib, and SDK.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta property="og:description" content="Compile C# into standalone WebAssembly. NetWasm 0.6 adds C# Web Workers, Wasm interop, and broader library support.">
+    <meta property="og:description" content="Compile C# 15 into standalone WebAssembly. NetWasm 0.7.1 powers multi-file browser projects, native libraries, and Web Workers.">
     <meta property="og:url" content="https://www.netwasm.com/">
     <meta property="og:image" content="https://www.netwasm.com/og-card.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta name="twitter:description" content="Compile C# into standalone WebAssembly. NetWasm 0.6 adds C# Web Workers, Wasm interop, and broader library support.">
+    <meta name="twitter:description" content="Compile C# 15 into standalone WebAssembly. NetWasm 0.7.1 powers multi-file browser projects, native libraries, and Web Workers.">
     <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
     <link rel="canonical" href="https://www.netwasm.com/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
@@ -78,7 +78,7 @@
         <div class="hero-copy">
           <p class="eyebrow"><span></span> Independent .NET. Built outside Microsoft.</p>
           <h1>Compile C#<br>to <em>WebAssembly.</em></h1>
-          <p class="hero-lede">NetWasm compiles C# and .NET CIL into small, standalone WebAssembly modules and WASI Preview 2 components. A clean Release build of <code>Console.WriteLine(42)</code> is 84,653 bytes, with the runtime and precise GC included.</p>
+          <p class="hero-lede">NetWasm compiles C# and .NET CIL into small, standalone WebAssembly modules and WASI Preview 2 components. A clean NetWasm 0.7.1 Release build of <code>Console.WriteLine(42)</code> is 55,825 bytes, with the runtime and precise GC included.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">
               Try NetWasm now, no install
@@ -98,7 +98,7 @@
           </div>
           <div class="proof-body">
             <p class="proof-label">FINAL COMPONENT</p>
-            <p class="proof-number">84,653</p>
+            <p class="proof-number">55,825</p>
             <p class="proof-unit">bytes</p>
             <div class="proof-rule"></div>
             <ul>
@@ -125,29 +125,29 @@
       <section class="feature-section section" aria-labelledby="release-title">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">NetWasm 0.6.0</p>
-            <h2 id="release-title">C# Web Workers.<br><span>Wasm interop. More libraries.</span></h2>
+            <p class="section-kicker">NetWasm 0.7</p>
+            <h2 id="release-title">A smaller precise GC.<br><span>Now the default.</span></h2>
           </div>
-          <p>Publish C# behind an asynchronous browser worker boundary, call JavaScript and native C through declared contracts, and run package patterns that depend on bounded attributes and expression trees.</p>
+          <p>Compact is a size-first, precise, non-moving mark-and-sweep collector with finalizers, resurrection, weak references, dependent handles, and pinning. It reduces the qualified complete component from 84,653 to 55,825 bytes.</p>
         </div>
         <div class="ecosystem-grid">
-          <a class="ecosystem-card" href="guides/csharp-web-worker/">
-            <span class="ecosystem-number">W</span>
-            <h3>Run C# in a Web Worker</h3>
-            <p>Choose a portable WIT contract or direct JSExport methods. NetWasm generates the worker bootstrap and Promise-based JavaScript client.</p>
-            <strong>Build a worker <span>→</span></strong>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">54.5</span>
+            <h3>KiB, including the runtime</h3>
+            <p>The qualified <code>Console.WriteLine(42)</code> Release component includes the application, runtime, Compact GC, and WASI component wrapper.</p>
+            <strong>Choose a collector <span>↗</span></strong>
           </a>
-          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/corelib-runtime.md#static-native-interop" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">↔</span>
-            <h3>Cross explicit boundaries</h3>
-            <p>Bundle application JavaScript modules, export managed entry points, define WIT interfaces, and link supported native C APIs from Wasm archives.</p>
-            <strong>Read the interop profile <span>↗</span></strong>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">34%</span>
+            <h3>Smaller than the Boehm build</h3>
+            <p>Boehm remains selectable for workloads that benefit from its allocation paths. Both collectors use precise managed roots.</p>
+            <strong>Reproduce both builds <span>↗</span></strong>
           </a>
-          <a class="ecosystem-card" href="blog/netwasm-0-6-0/">
-            <span class="ecosystem-number">0.6</span>
-            <h3>Use more .NET packages</h3>
-            <p>Bounded custom attributes, expression trees, CBOR fixes, secure randomness, Interlocked APIs, and runtime corrections broaden compatibility.</p>
-            <strong>See everything in 0.6.0 <span>→</span></strong>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.7.1" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">0.7.1</span>
+            <h3>Compile complete projects in the browser</h3>
+            <p>The browser compiler can link multiple assemblies, JavaScript exports, and validated native Wasm archives while retaining only reachable code.</p>
+            <strong>Read the 0.7.1 notes <span>↗</span></strong>
           </a>
         </div>
       </section>
@@ -158,12 +158,12 @@
             <p class="section-kicker">AOT vs AOT</p>
             <h2 id="size-comparison-title">Native Wasm size.<br><span>Measured, not promised.</span></h2>
           </div>
-          <p>A Release build of <code>Console.WriteLine(42)</code> is 82.7 KiB with NetWasm. The same source compiled with .NET 11 RC1 Blazor WebAssembly AOT is 14.58 MiB, or 181 times larger.</p>
+          <p>A NetWasm 0.7.1 Release build of <code>Console.WriteLine(42)</code> is 54.5 KiB. The same source compiled with .NET 11 RC1 Blazor WebAssembly AOT is 14.58 MiB, or 274 times larger.</p>
         </div>
         <a class="comparison-chart" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer" aria-label="Read the reproducible AOT size comparison methodology">
-          <img src="aot-console42-size.svg" width="960" height="548" alt="AOT Wasm size comparison: NetWasm is 82.7 KiB, Blazor .NET 10 is 11.71 MiB, and Blazor .NET 11 RC1 is 14.58 MiB. NetWasm is 181 times smaller than the .NET 11 result.">
+          <img src="aot-console42-size.svg" width="960" height="548" alt="AOT Wasm size comparison: NetWasm 0.7.1 is 54.5 KiB, Blazor .NET 10 is 11.71 MiB, and Blazor .NET 11 RC1 is 14.58 MiB. NetWasm is 274 times smaller than the .NET 11 result.">
         </a>
-        <p class="comparison-note">Uncompressed Wasm. Binary units: 1 KiB = 1,024 bytes and 1 MiB = 1,024 KiB. The 0.6.0 result is 140 bytes (+0.17%) above 0.5.0 because <code>ArgumentNullException.ThrowIfNull</code> now preserves its caller-expression parameter name. <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer">Reproduce the comparison <span aria-hidden="true">↗</span></a></p>
+        <p class="comparison-note">Uncompressed Wasm. Binary units: 1 KiB = 1,024 bytes and 1 MiB = 1,024 KiB. NetWasm 0.7.1 selects Compact by default; the retained Boehm build is 84,653 bytes. These are different deployment stacks, not equivalent UI frameworks. <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer">Reproduce the comparison <span aria-hidden="true">↗</span></a></p>
       </section>
 
       <section class="origin section" aria-label="NetWasm independence">
@@ -314,7 +314,7 @@
             <span>terminal</span>
             <button class="copy-button" type="button" data-copy-target="quickstart-code">Copy</button>
           </div>
-          <!--email_off--><pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
+          <!--email_off--><pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.7.1
 <span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
 <span class="prompt">$</span> cd HelloNetWasm
 <span class="prompt">$</span> dotnet run
@@ -327,7 +327,7 @@
         <div class="final-grid" aria-hidden="true"></div>
         <p class="section-kicker">Stop reading. Compile something.</p>
         <h2>Your C#.<br><span>One Wasm file.</span></h2>
-        <p>The Playground runs the compiler in your browser. Start with the C# 15 tour, then try FluentValidation, JSON, Regex, dependency injection, generated logging, XML, HTTP, LINQ, hashing, or TUnit.</p>
+        <p>The Playground is a multi-file C# 15 IDE that runs entirely in your browser. Build and run projects, link validated WebAssembly <code>.a</code> archives through <code>LibraryImport</code>, publish a <code>JSExport</code> Web Worker, inspect artifacts, and export the project to your computer.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">Try NetWasm now, no install <span aria-hidden="true">↗</span></a>
           <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
@@ -335,7 +335,7 @@
       </section>
 
       <section class="boundary section" aria-labelledby="boundary-title">
-        <h2 id="boundary-title">NetWasm 0.6 is ready for early adopters.</h2>
+        <h2 id="boundary-title">NetWasm 0.7.1 is ready for early adopters.</h2>
         <p>NetWasm is pre-1.0, so its API and ABI can evolve. The current profile deliberately excludes runtime reflection, <code>dynamic</code>, runtime assembly loading, managed threading, general managed file APIs, raw sockets, and subprocesses.</p>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">See the exact support boundary →</a>
       </section>
