@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
-    <meta name="description" content="Publish C# as a browser Web Worker with NetWasm 0.6.0. Choose WIT or JSExport, call the generated JavaScript client, and deploy it on a static host.">
+    <meta name="description" content="Publish C# as a browser Web Worker with NetWasm 0.7.0. Choose WIT or JSExport, call the generated JavaScript client, and deploy it on a static host.">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Run C# in a Web Worker with NetWasm">
     <meta property="og:description" content="Build a C# Web Worker with a generated Promise-based JavaScript client and an explicit Wasm boundary.">
@@ -53,13 +53,13 @@
           <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
           <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg>
         </button>
-        <a class="button button-small playground-link" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.6.0" target="_blank" rel="noopener noreferrer">Get NetWasm 0.6 <span aria-hidden="true">↗</span></a>
+        <a class="button button-small playground-link" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.7.0" target="_blank" rel="noopener noreferrer">Get NetWasm 0.7 <span aria-hidden="true">↗</span></a>
       </div>
     </header>
 
     <main id="main">
       <header class="guide-hero">
-        <p class="section-kicker">NetWasm 0.6.0 guide</p>
+        <p class="section-kicker">NetWasm 0.7.0 guide</p>
         <h1>Run C# in a Web Worker.</h1>
         <p>Publish C# behind an asynchronous worker boundary, keep the page responsive while it runs, and call it through a generated JavaScript client. Each worker owns its Wasm instance and managed heap.</p>
         <div class="guide-actions">
@@ -82,7 +82,7 @@
         <article class="guide-content">
           <section id="choose">
             <h2>Choose the contract your page needs</h2>
-            <p>NetWasm 0.6.0 ships two worker templates. Both generate the worker bootstrap, deployment manifest, and Promise-based page client.</p>
+            <p>NetWasm 0.7.0 ships two worker templates. Both generate the worker bootstrap, deployment manifest, and Promise-based page client.</p>
             <ul>
               <li><strong>WIT worker:</strong> choose <code>--worker wit</code> for a language-neutral interface described by WIT and packaged as a WebAssembly Component.</li>
               <li><strong>JSExport worker:</strong> choose <code>--worker jsexport</code> when JavaScript should call bounded managed methods marked with <code>[JSExport]</code>.</li>
@@ -92,10 +92,10 @@
 
           <section id="create">
             <h2>Create and publish the worker</h2>
-            <p>Install the 0.6.0 templates, create either worker shape, and publish the included working page:</p>
+            <p>Install the 0.7.0 templates, create either worker shape, and publish the included working page:</p>
             <div class="terminal guide-terminal">
               <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="worker-create-code">Copy</button></div>
-              <!--email_off--><pre id="worker-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.6.0
+              <!--email_off--><pre id="worker-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.7.0
 <span class="prompt">$</span> dotnet new netwasm-app -n ReportWorker --worker jsexport
 <span class="comment"># Or use: --worker wit</span>
 <span class="prompt">$</span> cd ReportWorker
@@ -154,8 +154,8 @@ try {
             <p class="section-kicker">Ready to build?</p>
             <h2>Put C# behind a worker boundary.</h2>
             <div class="guide-actions">
-              <a class="button button-primary" href="#create">Use the 0.6.0 template</a>
-              <a class="button button-quiet" href="../../blog/netwasm-0-6-0/">Read the release notes</a>
+              <a class="button button-primary" href="#create">Use the 0.7.0 template</a>
+              <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.7.0" target="_blank" rel="noopener noreferrer">Read the 0.7.0 release notes</a>
             </div>
           </div>
         </article>
