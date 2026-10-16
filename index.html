@@ -8,12 +8,12 @@
     <meta name="description" content="Compile C# and .NET CIL to small, standalone WebAssembly modules and WASI components with NetWasm's independent compiler, runtime, CoreLib, and SDK.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta property="og:description" content="Compile C# 15 into standalone WebAssembly. NetWasm 0.7.1 powers multi-file browser projects, native libraries, and Web Workers.">
+    <meta property="og:description" content="C# with precise GC: 47,798 bytes for printing 42, smaller than the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
     <meta property="og:url" content="https://www.netwasm.com/">
     <meta property="og:image" content="https://www.netwasm.com/og-card.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta name="twitter:description" content="Compile C# 15 into standalone WebAssembly. NetWasm 0.7.1 powers multi-file browser projects, native libraries, and Web Workers.">
+    <meta name="twitter:description" content="C# with precise GC: 47,798 bytes for printing 42, smaller than the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
     <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
     <link rel="canonical" href="https://www.netwasm.com/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
@@ -78,7 +78,7 @@
         <div class="hero-copy">
           <p class="eyebrow"><span></span> Independent .NET. Built outside Microsoft.</p>
           <h1>Compile C#<br>to <em>WebAssembly.</em></h1>
-          <p class="hero-lede">NetWasm compiles C# and .NET CIL into small, standalone WebAssembly modules and WASI Preview 2 components. A clean NetWasm 0.7.1 Release build of <code>Console.WriteLine(42)</code> is 55,825 bytes, with the runtime and precise GC included.</p>
+          <p class="hero-lede">C# with precise GC beats Rust's size-oriented profile for printing <code>42</code>: 47,798 bytes versus 53,635 bytes. Both are standalone WASI Preview 2 components. NetWasm includes its runtime and reachable precise-GC support.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">
               Try NetWasm now, no install
@@ -98,7 +98,7 @@
           </div>
           <div class="proof-body">
             <p class="proof-label">FINAL COMPONENT</p>
-            <p class="proof-number">55,825</p>
+            <p class="proof-number">47,798</p>
             <p class="proof-unit">bytes</p>
             <div class="proof-rule"></div>
             <ul>
@@ -125,29 +125,29 @@
       <section class="feature-section section" aria-labelledby="release-title">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">NetWasm 0.7</p>
-            <h2 id="release-title">A smaller precise GC.<br><span>Now the default.</span></h2>
+            <p class="section-kicker">NetWasm 0.8</p>
+            <h2 id="release-title">C# beats Rust.<br><span>With precise GC included.</span></h2>
           </div>
-          <p>Compact is a size-first, precise, non-moving mark-and-sweep collector with finalizers, resurrection, weak references, dependent handles, and pinning. It reduces the qualified complete component from 84,653 to 55,825 bytes.</p>
+          <p>The released 0.8.0 SDK produces a 47,798-byte Release/Oz component for <code>Console.WriteLine(42)</code>, or 13,501 bytes with Brotli quality 11. Rust 1.95.0's documented size-oriented profile produces 53,635 bytes for the same print-42 workload. This is a measured workload, not a claim about the smallest possible Rust binary.</p>
         </div>
         <div class="ecosystem-grid">
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">54.5</span>
+            <span class="ecosystem-number">46.7</span>
             <h3>KiB, including the runtime</h3>
             <p>The qualified <code>Console.WriteLine(42)</code> Release component includes the application, runtime, Compact GC, and WASI component wrapper.</p>
             <strong>Choose a collector <span>↗</span></strong>
           </a>
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">34%</span>
-            <h3>Smaller than the Boehm build</h3>
-            <p>Boehm remains selectable for workloads that benefit from its allocation paths. Both collectors use precise managed roots.</p>
+            <span class="ecosystem-number">10.9%</span>
+            <h3>Smaller than the measured Rust profile</h3>
+            <p>47,798 versus 53,635 uncompressed bytes. Both artifacts print 42 and use WASI Preview 2. Exact toolchain and profile details are published.</p>
             <strong>Reproduce both builds <span>↗</span></strong>
           </a>
-          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.7.1" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">0.7.1</span>
-            <h3>Compile complete projects in the browser</h3>
-            <p>The browser compiler can link multiple assemblies, JavaScript exports, and validated native Wasm archives while retaining only reachable code.</p>
-            <strong>Read the 0.7.1 notes <span>↗</span></strong>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.8.1" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">0.8.1</span>
+            <h3>Choose the collector for your workload</h3>
+            <p>Compact is the size-first default. NetWasmGC favors throughput; Bump never collects. Boehm remains available. All use the same SDK selection setting.</p>
+            <strong>Read the latest release notes <span>↗</span></strong>
           </a>
         </div>
       </section>
@@ -158,12 +158,12 @@
             <p class="section-kicker">AOT vs AOT</p>
             <h2 id="size-comparison-title">Native Wasm size.<br><span>Measured, not promised.</span></h2>
           </div>
-          <p>A NetWasm 0.7.1 Release build of <code>Console.WriteLine(42)</code> is 54.5 KiB. The same source compiled with .NET 11 RC1 Blazor WebAssembly AOT is 14.58 MiB, or 274 times larger.</p>
+          <p>The NetWasm 0.8.0 Release/Oz component for <code>Console.WriteLine(42)</code> is 46.7 KiB. The retained .NET 11 RC1 Blazor WebAssembly AOT print-42 build loads 14.58 MiB of Wasm. These are different deployment stacks, not equivalent UI frameworks.</p>
         </div>
         <a class="comparison-chart" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer" aria-label="Read the reproducible AOT size comparison methodology">
-          <img src="aot-console42-size.svg" width="960" height="548" alt="AOT Wasm size comparison: NetWasm 0.7.1 is 54.5 KiB, Blazor .NET 10 is 11.71 MiB, and Blazor .NET 11 RC1 is 14.58 MiB. NetWasm is 274 times smaller than the .NET 11 result.">
+          <img src="aot-console42-size.svg" width="960" height="548" alt="Uncompressed AOT Wasm: NetWasm 0.8.0 is 46.7 KiB, Blazor .NET 10 is 11.71 MiB, and Blazor .NET 11 RC1 is 14.58 MiB.">
         </a>
-        <p class="comparison-note">Uncompressed Wasm. Binary units: 1 KiB = 1,024 bytes and 1 MiB = 1,024 KiB. NetWasm 0.7.1 selects Compact by default; the retained Boehm build is 84,653 bytes. These are different deployment stacks, not equivalent UI frameworks. <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer">Reproduce the comparison <span aria-hidden="true">↗</span></a></p>
+        <p class="comparison-note">Uncompressed Wasm, excluding JavaScript and the host engine. Binary units: 1 KiB = 1,024 bytes and 1 MiB = 1,024 KiB. NetWasm selects Compact by default; the released 0.8.0 Boehm variant is 74,142 bytes. <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer">Reproduce the comparison <span aria-hidden="true">↗</span></a></p>
       </section>
 
       <section class="origin section" aria-label="NetWasm independence">
@@ -314,7 +314,7 @@
             <span>terminal</span>
             <button class="copy-button" type="button" data-copy-target="quickstart-code">Copy</button>
           </div>
-          <!--email_off--><pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.7.1
+          <!--email_off--><pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.8.1
 <span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
 <span class="prompt">$</span> cd HelloNetWasm
 <span class="prompt">$</span> dotnet run
@@ -335,7 +335,7 @@
       </section>
 
       <section class="boundary section" aria-labelledby="boundary-title">
-        <h2 id="boundary-title">NetWasm 0.7.1 is ready for early adopters.</h2>
+        <h2 id="boundary-title">NetWasm 0.8.1 is ready for early adopters.</h2>
         <p>NetWasm is pre-1.0, so its API and ABI can evolve. The current profile deliberately excludes runtime reflection, <code>dynamic</code>, runtime assembly loading, managed threading, general managed file APIs, raw sockets, and subprocesses.</p>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">See the exact support boundary →</a>
       </section>
