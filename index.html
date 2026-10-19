@@ -56,7 +56,7 @@
         <a href="#why">Why NetWasm</a>
         <a href="compile-csharp-to-webassembly/">Compile C# to Wasm</a>
         <a href="guides/csharp-web-worker/">C# Web Workers</a>
-        <a href="blog/netwasm-0-6-0/">NetWasm 0.6</a>
+        <a href="guides/call-csharp-from-javascript/">C# from JavaScript</a>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
       </nav>
       <div class="header-actions">
@@ -122,10 +122,40 @@
         <p>NO APP DLLs.</p>
       </section>
 
+      <section class="feature-section section" aria-labelledby="modules-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">NetWasm 0.9</p>
+            <h2 id="modules-title">Call C# from JavaScript.<br><span>Like any other module.</span></h2>
+          </div>
+          <p>A <code>JsModule</code> project publishes C# <code>[JSExport]</code> methods as a typed JavaScript module. A page imports it, calls <code>open()</code>, and calls the exports directly: synchronously on the page, or behind Promises in a Web Worker. C# calls back into JavaScript, including the DOM, through <code>[JSImport]</code>.</p>
+        </div>
+        <div class="ecosystem-grid">
+          <a class="ecosystem-card" href="guides/call-csharp-from-javascript/">
+            <span class="ecosystem-number">.mjs</span>
+            <h3>A typed module for your page</h3>
+            <p>Publish writes the module and its <code>.d.mts</code> declarations, named after your C# parameters and nullability. Exports take and return strings, typed arrays, and <code>JSObject</code>.</p>
+            <strong>Call C# from JavaScript <span>→</span></strong>
+          </a>
+          <a class="ecosystem-card" href="guides/csharp-web-worker/">
+            <span class="ecosystem-number">2</span>
+            <h3>Hosts: page and Web Worker</h3>
+            <p>Set <code>NetWasmJavaScriptHosts</code> to <code>page</code>, <code>worker</code>, or both. The worker host keeps long work off the page's thread behind a generated Promise-based client.</p>
+            <strong>Run C# in a Web Worker <span>→</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/javascript-interop.md#serve-the-published-files" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">0</span>
+            <h3>Lines of server code</h3>
+            <p>The publish directory is a static site. It needs no cross-origin isolation headers and runs under <code>script-src 'self' blob: 'wasm-unsafe-eval'</code>.</p>
+            <strong>Deploy anywhere static <span>↗</span></strong>
+          </a>
+        </div>
+      </section>
+
       <section class="feature-section section" aria-labelledby="release-title">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">NetWasm 0.8</p>
+            <p class="section-kicker">Measured size</p>
             <h2 id="release-title">C# beats Rust.<br><span>With precise GC included.</span></h2>
           </div>
           <p>The released 0.8.0 SDK produces a 47,798-byte Release/Oz component for <code>Console.WriteLine(42)</code>, or 13,501 bytes with Brotli quality 11. Rust 1.95.0's documented size-oriented profile produces 53,635 bytes for the same print-42 workload. This is a measured workload, not a claim about the smallest possible Rust binary.</p>
@@ -143,8 +173,8 @@
             <p>47,798 versus 53,635 uncompressed bytes. Both artifacts print 42 and use WASI Preview 2. Exact toolchain and profile details are published.</p>
             <strong>Reproduce both builds <span>↗</span></strong>
           </a>
-          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.8.1" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">0.8.1</span>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.9.0" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">0.9.0</span>
             <h3>Choose the collector for your workload</h3>
             <p>Compact is the size-first default. NetWasmGC favors throughput; Bump never collects. Boehm remains available. All use the same SDK selection setting.</p>
             <strong>Read the latest release notes <span>↗</span></strong>
@@ -314,7 +344,7 @@
             <span>terminal</span>
             <button class="copy-button" type="button" data-copy-target="quickstart-code">Copy</button>
           </div>
-          <!--email_off--><pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.8.1
+          <!--email_off--><pre id="quickstart-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.9.0
 <span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
 <span class="prompt">$</span> cd HelloNetWasm
 <span class="prompt">$</span> dotnet run
@@ -335,7 +365,7 @@
       </section>
 
       <section class="boundary section" aria-labelledby="boundary-title">
-        <h2 id="boundary-title">NetWasm 0.8.1 is ready for early adopters.</h2>
+        <h2 id="boundary-title">NetWasm 0.9.0 is ready for early adopters.</h2>
         <p>NetWasm is pre-1.0, so its API and ABI can evolve. The current profile deliberately excludes runtime reflection, <code>dynamic</code>, runtime assembly loading, managed threading, general managed file APIs, raw sockets, and subprocesses.</p>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/support-status.md" target="_blank" rel="noopener noreferrer">See the exact support boundary →</a>
       </section>
@@ -350,6 +380,7 @@
       <div class="footer-links">
         <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="compile-csharp-to-webassembly/">Compile C# to WebAssembly</a>
+        <a href="guides/call-csharp-from-javascript/">C# from JavaScript</a>
         <a href="guides/csharp-web-worker/">C# Web Workers</a>
         <a href="blog/netwasm-0-6-0/">NetWasm 0.6</a>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Documentation</a>

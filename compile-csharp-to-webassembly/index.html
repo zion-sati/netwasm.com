@@ -61,7 +61,7 @@
       <nav aria-label="Primary navigation">
         <a href="../">Home</a>
         <a href="../guides/csharp-web-worker/">C# Web Workers</a>
-        <a href="../blog/netwasm-0-6-0/">NetWasm 0.6</a>
+        <a href="../guides/call-csharp-from-javascript/">C# from JavaScript</a>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
         <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
@@ -129,7 +129,7 @@
                 <span>terminal</span>
                 <button class="copy-button" type="button" data-copy-target="guide-compile-code">Copy</button>
               </div>
-              <!--email_off--><pre id="guide-compile-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.8.1
+              <!--email_off--><pre id="guide-compile-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.9.0
 <span class="prompt">$</span> dotnet new netwasm-app -n HelloNetWasm
 <span class="prompt">$</span> cd HelloNetWasm
 <span class="prompt">$</span> dotnet run
@@ -166,7 +166,7 @@
             <h2>Compile C# to WebAssembly in your browser</h2>
             <p>The <a href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">NetWasm Playground</a> is a multi-file C# 15 IDE that runs the compiler locally in the browser. You can compile and run projects, link a validated WebAssembly <code>.a</code> archive through <code>LibraryImport</code>, publish a <code>JSExport</code> Web Worker, inspect diagnostics and artifacts, and export the project without sending source code to a compilation server.</p>
             <p>Browser deployment uses a JavaScript host adapter around the same compiled program. NetWasm is not Blazor and does not require a Blazor UI framework.</p>
-            <p>NetWasm 0.8.1 can also publish a C# application as a browser Web Worker with a generated JavaScript client. Follow the <a href="../guides/csharp-web-worker/">C# Web Workers guide</a> for a complete example.</p>
+            <p>NetWasm 0.9.0 can also publish C# as a typed JavaScript module that a page imports and calls directly, or that runs in a Web Worker behind a generated client. Follow <a href="../guides/call-csharp-from-javascript/">Call C# from JavaScript</a> or the <a href="../guides/csharp-web-worker/">C# Web Workers guide</a> for a complete example.</p>
           </section>
 
           <section id="how-it-works">
@@ -228,6 +228,7 @@
       <p>Compile C# to WebAssembly at native Wasm size.</p>
       <div class="footer-links">
         <a href="../">Home</a>
+        <a href="../guides/call-csharp-from-javascript/">C# from JavaScript</a>
         <a href="../guides/csharp-web-worker/">C# Web Workers</a>
         <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Documentation</a>
