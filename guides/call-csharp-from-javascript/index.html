@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+    <meta name="description" content="Call C# from JavaScript with NetWasm 0.9.0. Publish [JSExport] methods as a typed JavaScript module, open it from a page, and deploy it on any static host.">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Call C# from JavaScript with NetWasm">
+    <meta property="og:description" content="Publish C# [JSExport] methods as a typed JavaScript module that a page imports and calls directly.">
+    <meta property="og:url" content="https://www.netwasm.com/guides/call-csharp-from-javascript/">
+    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Call C# from JavaScript with NetWasm">
+    <meta name="twitter:description" content="Publish C# [JSExport] methods as a typed JavaScript module that a page imports and calls directly.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <link rel="canonical" href="https://www.netwasm.com/guides/call-csharp-from-javascript/">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="../../favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" sizes="180x180">
+    <title>Call C# from JavaScript with NetWasm</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Call C# from JavaScript with NetWasm",
+        "description": "Publish C# [JSExport] methods as a typed JavaScript module and call them from a page.",
+        "datePublished": "2026-10-20",
+        "dateModified": "2026-10-20",
+        "url": "https://www.netwasm.com/guides/call-csharp-from-javascript/",
+        "mainEntityOfPage": "https://www.netwasm.com/guides/call-csharp-from-javascript/"
+      }
+    </script>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="../../site.js" defer></script>
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../../" aria-label="NetWasm home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg>
+        <span>NetWasm</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="../../">Home</a>
+        <a href="../../compile-csharp-to-webassembly/">Compile C# to Wasm</a>
+        <a href="../csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change color theme">
+          <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg>
+        </button>
+        <a class="button button-small playground-link" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.9.0" target="_blank" rel="noopener noreferrer">Get NetWasm 0.9.0 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="guide-hero">
+        <p class="section-kicker">NetWasm 0.9.0 guide</p>
+        <h1>Call C# from JavaScript.</h1>
+        <p>Publish C# <code>[JSExport]</code> methods as a typed JavaScript module. A page imports it, opens an instance, and calls the exports like ordinary functions. There is no glue code to write and no server to run.</p>
+        <div class="guide-actions">
+          <a class="button button-primary" href="#create">Create a module</a>
+          <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/blob/main/docs/javascript-interop.md" target="_blank" rel="noopener noreferrer">SDK reference <span aria-hidden="true">↗</span></a>
+        </div>
+      </header>
+
+      <div class="guide-layout">
+        <aside class="guide-toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <a href="#create">Create and publish</a>
+          <a href="#call">Call from a page</a>
+          <a href="#imports">Call JavaScript from C#</a>
+          <a href="#hosts">Page or worker</a>
+          <a href="#boundary">What crosses</a>
+          <a href="#deploy">Deploy</a>
+          <a href="#limits">Current limits</a>
+        </aside>
+
+        <article class="guide-content">
+          <section id="create">
+            <h2>Create and publish a module</h2>
+            <p>Install the 0.9.0 templates, create a page module, and publish it with its working sample page:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="module-create-code">Copy</button></div>
+              <!--email_off--><pre id="module-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.9.0
+<span class="prompt">$</span> dotnet new netwasm-app -n Greeter --host page
+<span class="prompt">$</span> cd Greeter
+<span class="prompt">$</span> dotnet publish -c Release</code></pre><!--/email_off-->
+            </div>
+            <p>A <code>JsModule</code> project has exports instead of <code>Main</code>:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>Program.cs</span><button class="copy-button" type="button" data-copy-target="module-csharp-code">Copy</button></div>
+              <pre id="module-csharp-code"><code>using System.Runtime.InteropServices.JavaScript;
+
+public static partial class PageExports
+{
+    [JSImport("show", "app.host")]
+    private static extern void Show(string message);
+
+    [JSExport("greet")]
+    public static string Greet(string name)
+    {
+        var message = $"Hello, {name}, from C#.";
+        Show(message);
+        return message;
+    }
+}</code></pre>
+            </div>
+            <p>The project file selects the output type and the host:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>Greeter.csproj</span><button class="copy-button" type="button" data-copy-target="module-project-code">Copy</button></div>
+              <pre id="module-project-code"><code>&lt;PropertyGroup&gt;
+  &lt;OutputType&gt;JsModule&lt;/OutputType&gt;
+  &lt;NetWasmJavaScriptHosts&gt;page&lt;/NetWasmJavaScriptHosts&gt;
+  &lt;TargetFramework&gt;netwasm0.1&lt;/TargetFramework&gt;
+  &lt;Nullable&gt;enable&lt;/Nullable&gt;
+&lt;/PropertyGroup&gt;</code></pre>
+            </div>
+            <p>Publishing writes a static site to <code>bin/Release/netwasm0.1/publish</code>. It contains the sample <code>index.html</code> and <code>app.mjs</code>, the module <code>browser/Greeter.mjs</code>, and its TypeScript declarations in <code>browser/Greeter.d.mts</code>.</p>
+          </section>
+
+          <section id="call">
+            <h2>Call C# from the page</h2>
+            <p>Import <code>open</code> from the generated module. Each call to <code>open()</code> starts an independent instance and resolves to an object with one method per export.</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>app.mjs</span><button class="copy-button" type="button" data-copy-target="module-call-code">Copy</button></div>
+              <pre id="module-call-code"><code>import { open } from "./browser/Greeter.mjs";
+
+const app = await open({ stdout: line =&gt; console.log(line) });
+app.failure.then(error =&gt; console.error(error));
+
+const message = app.greet("browser"); // returns synchronously
+console.log(message);
+
+await app.close();</code></pre>
+            </div>
+            <p>A synchronous export runs on the page's thread and returns its value directly. An export that returns <code>Task</code> or <code>ValueTask</code> returns a Promise. The declarations name each parameter after its C# parameter and follow C# nullability, so the editor shows <code>greet(name: string): string</code>.</p>
+            <ul>
+              <li><code>close()</code> releases everything the instance holds.</li>
+              <li><code>failure</code> settles when the instance traps or fails, or after <code>close()</code>. Later calls throw <code>NetWasmHostError</code>.</li>
+              <li><code>open()</code> options supply guest output, environment variables, import modules at runtime, and a notification handler. Every option is optional.</li>
+            </ul>
+          </section>
+
+          <section id="imports">
+            <h2>Call JavaScript from C#</h2>
+            <p>A <code>[JSImport]</code> names the JavaScript module that implements it. On the page host, import modules run in the page, so they can use the DOM directly:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>app.host.mjs</span><button class="copy-button" type="button" data-copy-target="module-import-code">Copy</button></div>
+              <pre id="module-import-code"><code>export function show(message) {
+  document.querySelector("#result").textContent = message;
+}</code></pre>
+            </div>
+            <p>The project bundles it with a <code>NetWasmJavaScriptModule</code> item, or a page supplies it at runtime through the <code>modules</code> option of <code>open()</code>:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>Greeter.csproj</span><button class="copy-button" type="button" data-copy-target="module-item-code">Copy</button></div>
+              <pre id="module-item-code"><code>&lt;ItemGroup&gt;
+  &lt;NetWasmJavaScriptModule Include="app.host.mjs" Module="app.host" /&gt;
+&lt;/ItemGroup&gt;</code></pre>
+            </div>
+            <p>JavaScript that an import runs can call an export again before the import returns, nested up to 32 levels.</p>
+          </section>
+
+          <section id="hosts">
+            <h2>Run on the page or in a worker</h2>
+            <p><code>NetWasmJavaScriptHosts</code> chooses where the same module runs:</p>
+            <ul>
+              <li><strong><code>page</code> (default):</strong> synchronous exports return values, and import modules can use the DOM. Use it when C# drives page UI or calls are short.</li>
+              <li><strong><code>worker</code>:</strong> the module runs in a Web Worker behind a Promise-based client, so long work does not block the page. See <a href="../csharp-web-worker/">Run C# in a Web Worker</a>.</li>
+              <li><strong><code>page;worker</code>:</strong> publishes both, for a page that needs some calls of each kind.</li>
+            </ul>
+          </section>
+
+          <section id="boundary">
+            <h2>What crosses the boundary</h2>
+            <p>Booleans, numbers, strings, and number arrays cross directly. 64-bit integers arrive as <code>bigint</code>, and a number array arrives as the typed array with the same element type, in both directions. Strings and arrays are copied. Page exports can also take and return <code>JSObject</code>, a handle to a JavaScript object that stays in JavaScript.</p>
+            <p>Async exports accept strings, number arrays, and <code>JSObject</code>, and async imports can settle with them. The compiler generates the adapters for exactly the exports and imports your program declares; nothing is discovered by reflection at runtime.</p>
+          </section>
+
+          <section id="deploy">
+            <h2>Serve the published files</h2>
+            <p>The publish directory is a static site. Copy it to any static host. It needs no server code and no <code>Cross-Origin-Opener-Policy</code> or <code>Cross-Origin-Embedder-Policy</code> headers.</p>
+            <ul>
+              <li>Serve it over HTTPS or from <code>localhost</code>. Startup verifies files with <code>crypto.subtle</code>, which browsers provide only in secure contexts.</li>
+              <li>Open the page through HTTP. A <code>file://</code> URL does not work, because browsers block module scripts and <code>fetch</code> there.</li>
+              <li>Under a strict Content Security Policy, allow <code>script-src 'self' blob: 'wasm-unsafe-eval'</code>.</li>
+            </ul>
+          </section>
+
+          <section id="limits">
+            <h2>Current limits</h2>
+            <p>A synchronous export blocks the page until it returns. Return a <code>Task</code> for long work, or host the module in a worker. A <code>JSObject</code> stays in the realm that created it, so a worker-hosted export cannot take or return one.</p>
+            <p>The boundary carries the values above, not arbitrary object graphs: there is no automatic POCO serialization, dynamic overload resolution, or sharing of managed objects between realms. Use generated JSON contracts or WIT when the boundary is better described as data. The <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/javascript-interop.md" target="_blank" rel="noopener noreferrer">JavaScript interop reference</a> documents every option and the exact boundary.</p>
+          </section>
+
+          <div class="guide-next">
+            <p class="section-kicker">Ready to build?</p>
+            <h2>Put C# behind a JavaScript import.</h2>
+            <div class="guide-actions">
+              <a class="button button-primary" href="#create">Use the 0.9.0 template</a>
+              <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.9.0" target="_blank" rel="noopener noreferrer">Read the 0.9.0 release notes</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <p>C# at native Wasm size.</p>
+      <div class="footer-links">
+        <a href="../../">Home</a>
+        <a href="../../compile-csharp-to-webassembly/">Compile C# to WebAssembly</a>
+        <a href="../csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </footer>
+  </body>
+</html>
