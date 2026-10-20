@@ -122,36 +122,6 @@
         <p>NO APP DLLs.</p>
       </section>
 
-      <section class="feature-section section" aria-labelledby="modules-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">NetWasm 0.9</p>
-            <h2 id="modules-title">Call C# from JavaScript.<br><span>Like any other module.</span></h2>
-          </div>
-          <p>A <code>JsModule</code> project publishes C# <code>[JSExport]</code> methods as a typed JavaScript module. A page imports it, calls <code>open()</code>, and calls the exports directly: synchronously on the page, or behind Promises in a Web Worker. C# calls back into JavaScript, including the DOM, through <code>[JSImport]</code>.</p>
-        </div>
-        <div class="ecosystem-grid">
-          <a class="ecosystem-card" href="guides/call-csharp-from-javascript/">
-            <span class="ecosystem-number">.mjs</span>
-            <h3>A typed module for your page</h3>
-            <p>Publish writes the module and its <code>.d.mts</code> declarations, named after your C# parameters and nullability. Exports take and return strings, typed arrays, and <code>JSObject</code>.</p>
-            <strong>Call C# from JavaScript <span>→</span></strong>
-          </a>
-          <a class="ecosystem-card" href="guides/csharp-web-worker/">
-            <span class="ecosystem-number">2</span>
-            <h3>Hosts: page and Web Worker</h3>
-            <p>Set <code>NetWasmJavaScriptHosts</code> to <code>page</code>, <code>worker</code>, or both. The worker host keeps long work off the page's thread behind a generated Promise-based client.</p>
-            <strong>Run C# in a Web Worker <span>→</span></strong>
-          </a>
-          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/javascript-interop.md#serve-the-published-files" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">0</span>
-            <h3>Lines of server code</h3>
-            <p>The publish directory is a static site. It needs no cross-origin isolation headers and runs under <code>script-src 'self' blob: 'wasm-unsafe-eval'</code>.</p>
-            <strong>Deploy anywhere static <span>↗</span></strong>
-          </a>
-        </div>
-      </section>
-
       <section class="feature-section section" aria-labelledby="release-title">
         <div class="section-heading">
           <div>
@@ -178,6 +148,66 @@
             <h3>Choose the collector for your workload</h3>
             <p>Compact is the size-first default. NetWasmGC favors throughput; Bump never collects. Boehm remains available. All use the same SDK selection setting.</p>
             <strong>Read the latest release notes <span>↗</span></strong>
+          </a>
+        </div>
+      </section>
+
+      <section class="feature-section section" aria-labelledby="mono-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Speed, measured</p>
+            <h2 id="mono-title">Faster than Mono AOT.<br><span>Same C#, same engine.</span></h2>
+          </div>
+          <p>As of 0.9.0, NetWasm runs our allocation and garbage-collection benchmarks faster than Mono AOT (.NET 10, <code>wasi-wasm</code>), compiled from the same C# source and run by the same Wasmtime 49.0.3 on an Apple M1 Max. Medians of 15 runs, each checked against desktop .NET's result. Desktop .NET, running native code, is still faster.</p>
+        </div>
+        <div class="ecosystem-grid">
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">15%</span>
+            <h3>Less time: full transaction</h3>
+            <p>50.4 ms with NetWasmGC versus 59.1 ms for Mono AOT. Strings, a <code>HashSet&lt;int&gt;</code> and <code>decimal</code> balances in a growing dictionary.</p>
+            <strong>See the full results <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">6%</span>
+            <h3>Less time: retained object graph</h3>
+            <p>13.3 ms versus 14.2 ms to build and keep a graph of 100,000 small objects alive.</p>
+            <strong>Versions and settings <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md#reproduce" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">25%</span>
+            <h3>Less time: UI churn</h3>
+            <p>22.0 ms versus 29.1 ms replacing short-lived objects every frame for 500 frames.</p>
+            <strong>Reproduce it <span>↗</span></strong>
+          </a>
+        </div>
+      </section>
+
+      <section class="feature-section section" aria-labelledby="modules-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">NetWasm 0.9</p>
+            <h2 id="modules-title">Call C# from JavaScript.<br><span>Like any other module.</span></h2>
+          </div>
+          <p>A <code>JsModule</code> project publishes C# <code>[JSExport]</code> methods as a typed JavaScript module. A page imports it, calls <code>open()</code>, and calls the exports directly: synchronously on the page, or behind Promises in a Web Worker. C# calls back into JavaScript, including the DOM, through <code>[JSImport]</code>.</p>
+        </div>
+        <div class="ecosystem-grid">
+          <a class="ecosystem-card" href="guides/call-csharp-from-javascript/">
+            <span class="ecosystem-number">.mjs</span>
+            <h3>A typed module for your page</h3>
+            <p>Publish writes the module and its <code>.d.mts</code> declarations, named after your C# parameters and nullability. Exports take and return strings, typed arrays, and <code>JSObject</code>.</p>
+            <strong>Call C# from JavaScript <span>→</span></strong>
+          </a>
+          <a class="ecosystem-card" href="guides/csharp-web-worker/">
+            <span class="ecosystem-number">2</span>
+            <h3>Hosts: page and Web Worker</h3>
+            <p>Set <code>NetWasmJavaScriptHosts</code> to <code>page</code>, <code>worker</code>, or both. The worker host keeps long work off the page's thread behind a generated Promise-based client.</p>
+            <strong>Run C# in a Web Worker <span>→</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/javascript-interop.md#serve-the-published-files" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">0</span>
+            <h3>Lines of server code</h3>
+            <p>The publish directory is a static site. It needs no cross-origin isolation headers and runs under <code>script-src 'self' blob: 'wasm-unsafe-eval'</code>.</p>
+            <strong>Deploy anywhere static <span>↗</span></strong>
           </a>
         </div>
       </section>
