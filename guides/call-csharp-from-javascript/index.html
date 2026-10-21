@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
-    <meta name="description" content="Call C# from JavaScript with NetWasm 0.10.0. Publish [JSExport] methods as a typed JavaScript module, open it from a page, and deploy it on any static host.">
+    <meta name="description" content="Call C# from JavaScript with NetWasm. Publish [JSExport] methods as a typed JavaScript module, open it from a page, and deploy it on any static host.">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Call C# from JavaScript with NetWasm">
     <meta property="og:description" content="Publish C# [JSExport] methods as a typed JavaScript module that a page imports and calls directly.">
@@ -53,13 +53,13 @@
           <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
           <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg>
         </button>
-        <a class="button button-small playground-link" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.10.0" target="_blank" rel="noopener noreferrer">Get NetWasm 0.10.0 <span aria-hidden="true">↗</span></a>
+        <a class="button button-small playground-link" href="https://github.com/zion-sati/NetWasm/releases/latest" target="_blank" rel="noopener noreferrer">Get NetWasm <span aria-hidden="true">↗</span></a>
       </div>
     </header>
 
     <main id="main">
       <header class="guide-hero">
-        <p class="section-kicker">NetWasm 0.10.0 guide</p>
+        <p class="section-kicker">NetWasm guide</p>
         <h1>Call C# from JavaScript.</h1>
         <p>Publish C# <code>[JSExport]</code> methods as a typed JavaScript module. A page imports it, opens an instance, and calls the exports like ordinary functions. There is no glue code to write and no server to run.</p>
         <div class="guide-actions">
@@ -83,10 +83,10 @@
         <article class="guide-content">
           <section id="create">
             <h2>Create and publish a module</h2>
-            <p>Install the 0.10.0 templates, create a page module, and publish it with its working sample page:</p>
+            <p>Install the templates, create a page module, and publish it with its working sample page:</p>
             <div class="terminal guide-terminal">
               <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="module-create-code">Copy</button></div>
-              <!--email_off--><pre id="module-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates@0.10.0
+              <!--email_off--><pre id="module-create-code"><code><span class="prompt">$</span> dotnet new install NetWasm.Templates
 <span class="prompt">$</span> dotnet new netwasm-app -n Greeter --host page
 <span class="prompt">$</span> cd Greeter
 <span class="prompt">$</span> dotnet publish -c Release</code></pre><!--/email_off-->
@@ -201,8 +201,8 @@ await app.close();</code></pre>
             <p class="section-kicker">Ready to build?</p>
             <h2>Put C# behind a JavaScript import.</h2>
             <div class="guide-actions">
-              <a class="button button-primary" href="#create">Use the 0.10.0 template</a>
-              <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/releases/tag/v0.9.0" target="_blank" rel="noopener noreferrer">Read the 0.9.0 release notes</a>
+              <a class="button button-primary" href="#create">Use the template</a>
+              <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/blob/main/docs/javascript-interop.md" target="_blank" rel="noopener noreferrer">Read the JavaScript interop docs</a>
             </div>
           </div>
         </article>
