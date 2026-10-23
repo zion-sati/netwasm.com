@@ -141,6 +141,12 @@ try {
           <section id="deploy">
             <h2>Serve the published files</h2>
             <p>Serve the complete publish directory from an ordinary static HTTP host. Open <code>index.html</code> through HTTP rather than directly from the filesystem so JavaScript modules and Wasm load with normal browser rules.</p>
+            <p>The server must send <code>.mjs</code> files with a JavaScript MIME type such as <code>text/javascript</code>, because browsers refuse to run a module script served as anything else. Most static servers already do. Python's <code>http.server</code> on Windows sends <code>text/plain</code> when the Windows registry lists <code>.mjs</code> that way, so set the type when you start it from the publish directory:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>terminal</span><button class="copy-button" type="button" data-copy-target="worker-serve-code">Copy</button></div>
+              <pre id="worker-serve-code"><code><span class="prompt">$</span> py -c "import http.server, mimetypes; mimetypes.add_type('text/javascript', '.mjs'); http.server.test(http.server.SimpleHTTPRequestHandler, port=8000)"</code></pre>
+            </div>
+            <p>Changing the <code>Content Type</code> value under <code>HKEY_CLASSES_ROOT\.mjs</code> to <code>text/javascript</code> also fixes it.</p>
             <p>The worker cannot access the page DOM. Return values to the caller or use generated notifications to ask the page to update its interface.</p>
           </section>
 
