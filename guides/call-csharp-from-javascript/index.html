@@ -187,6 +187,7 @@ await app.close();</code></pre>
             <ul>
               <li>Serve it over HTTPS or from <code>localhost</code>. Startup verifies files with <code>crypto.subtle</code>, which browsers provide only in secure contexts.</li>
               <li>Open the page through HTTP. A <code>file://</code> URL does not work, because browsers block module scripts and <code>fetch</code> there.</li>
+              <li>Serve <code>.mjs</code> files as <code>text/javascript</code>. Browsers refuse a module script with another MIME type. Python's <code>http.server</code> on Windows uses the type the Windows registry gives <code>.mjs</code>, which can be <code>text/plain</code>; the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/javascript-interop.md#serve-the-published-files" target="_blank" rel="noopener noreferrer">SDK guide</a> shows how to start it with the right type.</li>
               <li>Under a strict Content Security Policy, allow <code>script-src 'self' blob: 'wasm-unsafe-eval'</code>.</li>
             </ul>
           </section>
