@@ -178,6 +178,7 @@ await app.close();</code></pre>
           <section id="boundary">
             <h2>What crosses the boundary</h2>
             <p>Booleans, numbers, strings, and number arrays cross directly. 64-bit integers arrive as <code>bigint</code>, and a number array arrives as the typed array with the same element type, in both directions. Strings and arrays are copied. Page exports can also take and return <code>JSObject</code>, a handle to a JavaScript object that stays in JavaScript.</p>
+            <p>A synchronous import can also take a <code>Span&lt;T&gt;</code> or <code>ReadOnlySpan&lt;T&gt;</code> of numbers. JavaScript receives the same typed array as for an array, as a view of the span's memory, so nothing is copied. The view is valid only until the import returns, and JavaScript must not write to the view of a <code>ReadOnlySpan&lt;T&gt;</code>. A synchronous import whose parameters and result are all primitive scalars, or <code>void</code>, compiles to a direct WebAssembly call into the JavaScript function, with nothing copied through memory; use such imports on a hot path.</p>
             <p>Async exports accept strings, number arrays, and <code>JSObject</code>, and async imports can settle with them. The compiler generates the adapters for exactly the exports and imports your program declares; nothing is discovered by reflection at runtime.</p>
           </section>
 
