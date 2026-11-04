@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+    <meta name="description" content="How NetWasm 0.10, our optimization release, made C# on WebAssembly faster than Mono AOT: exception handling that costs nothing, array checks proved once, DoomSharp, Wasm SIMD, a loop vectorizer and range-checked divisions, measured on 2,213 benchmarks.">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="NetWasm 0.10: Making C# on WebAssembly Faster Than Mono AOT">
+    <meta property="og:description" content="NetWasm 0.10, our optimization release: exception handling that costs nothing, array checks proved once, DoomSharp, Wasm SIMD, a loop vectorizer and range-checked divisions.">
+    <meta property="og:url" content="https://www.netwasm.com/blog/compiler-optimization/">
+    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NetWasm 0.10: Making C# on WebAssembly Faster Than Mono AOT">
+    <meta name="twitter:description" content="NetWasm 0.10, our optimization release: exception handling that costs nothing, array checks proved once, DoomSharp, Wasm SIMD, a loop vectorizer and range-checked divisions.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <link rel="canonical" href="https://www.netwasm.com/blog/compiler-optimization/">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="../../favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" sizes="180x180">
+    <title>NetWasm 0.10: Making C# on WebAssembly Faster Than Mono AOT</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "NetWasm 0.10: Making C# on WebAssembly Faster Than Mono AOT",
+        "description": "How NetWasm 0.10, our optimization release, made C# on WebAssembly faster than Mono AOT.",
+        "datePublished": "2026-11-05",
+        "dateModified": "2026-11-05",
+        "url": "https://www.netwasm.com/blog/compiler-optimization/",
+        "mainEntityOfPage": "https://www.netwasm.com/blog/compiler-optimization/"
+      }
+    </script>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="../../site.js" defer></script>
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <nav aria-label="Primary navigation">
+        <a href="../../">Home</a>
+        <a href="../../compile-csharp-to-webassembly/">Compile C# to Wasm</a>
+        <a href="../../guides/csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change color theme"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg></button>
+        <a class="button button-small playground-link" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer"><i></i> Try it now <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="guide-hero">
+        <p class="section-kicker">Engineering · 5 November 2026</p>
+        <h1>NetWasm 0.10: making C# on WebAssembly faster than Mono AOT</h1>
+        <p>0.10 is NetWasm's optimization release. It started with a quicksort that took a third longer than Mono AOT and a Doom renderer at half the speed of native code, and the compiler work that turned both around: exception handling that costs nothing until something throws, array checks proved once, Wasm SIMD, a loop vectorizer, and divisions whose checks are proved unnecessary.</p>
+        <div class="guide-actions">
+          <a class="button button-primary" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">Benchmark method <span aria-hidden="true">↗</span></a>
+          <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/releases" target="_blank" rel="noopener noreferrer">NetWasm 0.10 release notes</a>
+        </div>
+      </header>
+
+      <div class="guide-layout">
+        <aside class="guide-toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <a href="#start">Where it started</a>
+          <a href="#measuring">Measuring on Wasmtime</a>
+          <a href="#exceptions">Exceptions that never happen</a>
+          <a href="#arrays">Array checks inside loops</a>
+          <a href="#doomsharp">DoomSharp</a>
+          <a href="#simd">SIMD and vectorized loops</a>
+          <a href="#divisions">Divisions and their checks</a>
+          <a href="#results">Where it stands</a>
+          <a href="#gaps">What is still slower</a>
+        </aside>
+
+        <article class="guide-content">
+          <section id="start">
+            <h2>Where it started</h2>
+            <p>NetWasm compiles C# ahead of time to WebAssembly: the compiler reads the IL Roslyn produces and emits Wasm, with its own runtime and a CoreLib ported from .NET. Mono's ahead-of-time WASI build is the obvious yardstick, because it is .NET on the same engine. 0.10.0 opened the release with a new garbage collector, which has <a href="../netwasmgc/">its own post</a>, and that put NetWasm ahead of Mono AOT on our allocation workloads. On plain loops it still lost: a quicksort of 100,000 integers took 77.2 ms against Mono AOT's 58.0.</p>
+            <p>Then DoomSharp, David Fowler's C# software renderer for Doom, which ships a NetWasm build, was reported to run on 0.10.1 at half the speed of .NET's NativeAOT. Our own measurement on 0.10.2 agreed in direction: 120 renders took 3.7 s at <code>O3</code>, Mono AOT 2.9 s, desktop .NET about 1.3 s.</p>
+            <p>This post is about the compiler work through the rest of 0.10, from 0.10.1 to 0.10.8, that changed those numbers. Every change below is a general transformation of IL or of NetWasm's own output, measured on the workload that exposed it and on a broad benchmark table before it shipped. None of them looks for a particular program.</p>
+          </section>
+
+          <section id="measuring">
+            <h2>Measuring on Wasmtime</h2>
+            <p>Everything here runs on Wasmtime 49.0.3 on an Apple M1 Max, with each module compiled ahead of time so compilation is not timed. The broad table is dotnet/performance's runtime micro-benchmarks plus its vector and span library benchmarks, and a few workloads of our own: 2,213 cases, each compiled from the same C# by NetWasm, by Mono AOT on .NET 11 RC3 with Wasm SIMD on, and by desktop .NET 11 RC3, whose JIT runs fully optimized from the start.</p>
+            <p>Comparing two NetWasm builds turned out to need care. Identical loops at different code addresses differed by up to 15% on the M1, so an unrelated change that moved a hot loop looked like a speedup or a regression. Our A/B runs now align every function on a 4 KiB boundary (<code>-C cranelift-log2_min_function_alignment=12</code>; 128 bytes still left a byte-identical loop 1.37 times slower, because branch prediction indexes higher address bits) and alternate the two builds over several rounds. A result that does not survive that is not counted.</p>
+            <p>Profiling needed the same discipline. Wasmtime's guest profiler samples a module's functions, but a release module has no names, and function indices change between builds. We profile the timed module and take the names from a twin built with names kept, after checking that the two are the same code once the names are stripped, then cut each hot path into a small standalone kernel that runs on all three runtimes in seconds. Most fixes started as a kernel where NetWasm was clearly behind desktop .NET.</p>
+          </section>
+
+          <section id="exceptions">
+            <h2>Exceptions that never happen</h2>
+            <p>The first large win was in code that never throws. Wasmtime saves every callee-saved register, floating point included, around any function that contains a <code>throw</code> or a <code>try_table</code>, because it treats the calls inside as clobbering them. A C# method that can throw through a null check, an array bound or checked arithmetic held its <code>throw</code> inline, and every method with a root frame wrapped its body in a handler that only released the frame on the way out. So most methods paid for exception handling on every call.</p>
+            <p>In 0.10.1 a method that can throw calls a shared throw function instead, and frames are released by the handler that catches the exception, the way a native stack pointer snaps back. On our allocation workloads that took the full transaction from 43.9 to 34.9 ms, the retained object graph from 8.8 to 4.6 ms and UI churn from 17.6 to 7.9 ms.</p>
+          </section>
+
+          <section id="arrays">
+            <h2>Array checks inside loops</h2>
+            <p>The quicksort was the opposite problem: a tight loop of array reads, swaps and comparisons, where every access paid a null check and a bounds check, and every swap was a call. 0.10.2 inlined small straight-line methods called inside loops, such as a tuple swap. An inlined call now reads its arguments where the caller holds them instead of copying them, so the array checks see the caller's array and can use what is already known about it. An access skips its checks when an earlier access to the same array and index made them, and nested loops stop reloading each array's length and data. The quicksort went from 77.2 to 54.0 ms, ahead of Mono AOT's 58.0.</p>
+          </section>
+
+          <section id="doomsharp">
+            <h2>DoomSharp</h2>
+            <p><a href="https://github.com/davidfowl/doomsharp" target="_blank" rel="noopener noreferrer">DoomSharp</a> renders Doom in C# with no graphics API: a span of pixels, filled column by column. Our harness renders the opening view of E1M1, the scene DoomSharp's own browser benchmark uses, 120 times, from a WAD reduced to the lumps that render reads. Profiling it found problems no micro-benchmark had shown.</p>
+            <ul>
+              <li><strong>Struct copies per pixel.</strong> The rasterizer's edge function, called twice per pixel, took two 40-byte structs by value and read them through property getters. The getters kept it from being a straight-line leaf, so it stayed a call, and each call copied both structs. Reading value-type accessors as field loads made it a leaf the loop inlines, and an argument the callee only reads is now read from the caller's copy. The render went from 3,595 to 2,455 ms.</li>
+              <li><strong>A branching helper in the pixel loop.</strong> Shading clamps a light factor through a 49-instruction helper with branches. .NET's JIT inlines callees of up to about 128 IL bytes at a hot call site; NetWasm only inlined straight-line ones. At <code>O3</code> it now also inlines a small branching callee inside a loop when it has no loop, allocation or throw of its own: 2,223 to 1,934 ms. <code>Math.Clamp</code> itself now inlines as it does in .NET, with its range check calling a throw helper.</li>
+              <li><strong>Library code the renderer leans on.</strong> Lump lookup uppercases every name it compares, and sprite names are built with string interpolation. Invariant casing now skips unchanged ASCII four characters at a time, as .NET does, and interpolated strings format into one pooled buffer through .NET's own handler rather than through a <code>StringBuilder</code> and a boxed value per hole.</li>
+            </ul>
+            <p>None of these is specific to Doom. The struct accessor and inlining changes show up across the micro-benchmark table, and the casing and formatting changes are CoreLib code every program shares.</p>
+          </section>
+
+          <section id="simd">
+            <h2>SIMD and vectorized loops</h2>
+            <p>0.10.7 turns on WebAssembly SIMD. <code>Vector128.IsHardwareAccelerated</code> and <code>Vector.IsHardwareAccelerated</code> are true, and <code>Vector128&lt;T&gt;</code>, <code>Vector&lt;T&gt;</code> and the <code>PackedSimd</code> intrinsics lower to Wasm's 128-bit instructions. That alone does little if vectors live in memory, so a vector value now has its own <code>v128</code> local and a slot on the compiler's evaluation stack, and touches memory only where C# puts it there. CoreLib's span, search, ASCII, UTF-8, Base64 and numerics code is .NET 11's own, so it takes the vectorized paths .NET wrote for it.</p>
+            <p>The compiler also vectorizes ordinary loops. An element-wise loop over arrays, like <code>c[i] = a[i] * k + b[i]</code>, runs four or more elements per iteration behind a guard that every access is in bounds and that the arrays cannot overlap, and finishes with the original loop. A loop that sums an array, or takes its minimum or maximum, becomes one call to a vectorized fold. A pure <code>Math</code> call of values the loop never changes, such as <code>Math.Pow(nu * dt / dx, 2.0)</code> in a Burgers' equation solver, is computed once before the loop, which is what let that loop vectorize. The Burgers solver's first test went from 497 ms in 0.10.6 to 71 ms; Mono AOT takes 186 and desktop .NET 93.</p>
+<p>The matrix types came last. Transposing, inverting or multiplying a <code>Matrix4x4</code> shuffles lanes between rows, and those shuffles went through <code>Vector64</code> halves in software, so the matrix benchmarks took 1.55 times Mono AOT's time. Each shuffle now compiles to one Wasm <code>i8x16.shuffle</code>, and the family takes 0.80 of Mono AOT's time.</p>
+          </section>
+
+          <section id="divisions">
+            <h2>Divisions and their checks</h2>
+            <p>The last compiler change of the release came from an issue report: a search for the largest prime below 10,000,000 by trial division ran slower than Mono AOT. Its loop computed <code>value / divisor</code> and <code>value % divisor</code>, and NetWasm divided twice, each time behind a check for a zero divisor and one for <code>int.MinValue / -1</code>. In 0.10.8 a remainder of the values a division just divided takes that division's quotient, <code>value - quotient * divisor</code>, with no checks of its own, since the division made them.</p>
+            <p>The compiler also follows the ranges that integer locals and arguments can hold, through arithmetic, comparisons and loops, and leaves out the checks those ranges rule out. In the search, the divisor starts at 3 and only grows, so its division needs no zero check, and the method has already returned for values below 2, so the dividend cannot be <code>int.MinValue</code>. The same analysis drops overflow checks from checked arithmetic whose result always fits and from checked conversions whose value always fits.</p>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Largest prime below 10,000,000 (ms)</th><th><code>/</code> and <code>%</code></th><th>One <code>/</code></th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>NetWasm 0.10.7</td><td>1,376</td><td>1,128</td></tr>
+                  <tr><td>NetWasm 0.10.8</td><td><strong>765</strong></td><td><strong>760</strong></td></tr>
+                  <tr><td>Mono AOT</td><td>862</td><td>856</td></tr>
+                  <tr><td>Desktop .NET, JIT</td><td>1,156</td><td>685</td></tr>
+                  <tr><td>Desktop .NET, NativeAOT</td><td>1,165</td><td>705</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>That is the issue's reproducer, medians of seven runs. With both operators NetWasm is now ahead of Mono AOT and desktop .NET; with one division per step desktop .NET is still a little ahead.</p>
+          </section>
+
+          <section id="results">
+            <h2>Where it stands</h2>
+            <p>Across the 2,213 cases that every runtime runs, NetWasm 0.10.8 at <code>O3</code> with NetWasmGC takes 0.41 of Mono AOT's time, as a geometric mean that leaves out five cases whose work Mono AOT's LLVM deletes (0.43 with them). On the 464 runtime benchmarks that 0.10.6 also runs, it takes 0.40 of 0.10.6's time: 0.10.6 took 1.20 times Mono AOT's time there and 2.15 times desktop .NET's, and 0.10.8 takes 0.48 and 0.87.</p>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Family</th><th>Cases</th><th>NetWasm / Mono AOT</th><th>NetWasm / desktop .NET</th><th>Mono AOT / desktop .NET</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Runtime</td><td>384</td><td>0.43</td><td>0.78</td><td>1.79</td></tr>
+                  <tr><td>Math</td><td>96</td><td>0.81</td><td>1.34</td><td>1.65</td></tr>
+                  <tr><td>Numerics vectors</td><td>770</td><td>0.38</td><td>3.08</td><td>8.04</td></tr>
+                  <tr><td>Intrinsics</td><td>588</td><td>0.34</td><td>3.26</td><td>9.46</td></tr>
+                  <tr><td>Span and memory</td><td>370</td><td>0.53</td><td>2.02</td><td>3.83</td></tr>
+                  <tr><td>NetWasm workloads</td><td>5</td><td>0.48</td><td>0.72</td><td>1.50</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Lower is faster. Some single cases, in nanoseconds or milliseconds per operation:</p>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Benchmark</th><th>NetWasm 0.10.6</th><th>NetWasm 0.10.8</th><th>Mono AOT</th><th>Desktop .NET</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Burgers, test 1 (ms)</td><td>497</td><td><strong>72</strong></td><td>186</td><td>93</td></tr>
+                  <tr><td>FannkuchRedux (ms)</td><td>471</td><td><strong>122</strong></td><td>125</td><td>113</td></tr>
+                  <tr><td>AddArray (&micro;s)</td><td>21.5</td><td><strong>6.7</strong></td><td>11.1</td><td>10.9</td></tr>
+                  <tr><td>Math.Exp (&micro;s)</td><td>124</td><td><strong>17.8</strong></td><td>18.4</td><td>13.2</td></tr>
+                  <tr><td>Dictionary expansion (ns)</td><td>1,391</td><td><strong>59</strong></td><td>467</td><td>375</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>DoomSharp, timed the same way as before, now renders its 120 frames in 1,623 ms with NetWasmGC and 1,781 ms with Compact, against 3,638 ms with NetWasm 0.10.6 and 2,371 ms with Mono AOT. Desktop .NET 11 takes 1,176 ms with NativeAOT and 1,053 ms with its JIT. That is the median of seven fresh processes per build, each timing a second batch of 120 renders after a first.</p>
+            <p>Every case runs once per runtime, compiled from the same C#: NetWasm at <code>O3</code> with NetWasmGC, Mono AOT on .NET 11 RC3 with Wasm SIMD, both on Wasmtime 49.0.3, and desktop .NET 11 RC3's JIT without tiering, so it runs optimized code from the start. The three ran interleaved, in chunks of 50 cases, keeping each case's fastest of two rounds, and NetWasm 0.10.6 was timed on the same machine five days earlier. The <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">performance page</a> has whole-program workloads with ranges and the command that reproduces them.</p>
+          </section>
+
+          <section id="gaps">
+            <h2>What is still slower</h2>
+            <p>Span searches were the clearest gap until the end of the round, when .NET's own <code>MemoryExtensions</code> and <code>SpanHelpers</code> replaced NetWasm's scalar loops: the family went from 1.62 times Mono AOT's time to 0.59, and to 0.53 once 0.10.8 brought .NET 11's comparisons: <code>IndexOf</code> with <code>OrdinalIgnoreCase</code> or <code>InvariantCulture</code> now takes 0.6 to 1.1 times Mono AOT's time. What remains is a handful of cases: block copies through a local's address, with <code>CopyBlock64</code> at 3.3 times; <code>Matrix4x4</code>'s <code>CreateWorld</code> and <code>CreateLookAt</code> at 1.85 and 1.41; <code>SeekUnroll</code> at up to 1.5; and a few strength-reduction loops that sum small integers over spans, at up to 1.2.</p>
+            <p>Desktop .NET runs the vector benchmarks about 3.1 times as fast as NetWasm, and 8.0 times as fast as Mono AOT. It compiles straight to the host's SIMD instructions, where Wasm code has fixed 128-bit operations and an engine between it and the CPU. Math takes 0.81 of Mono AOT's time: <code>Cbrt</code> and <code>SinCos</code> take less time than Mono AOT's, though <code>Math.Pow</code> still takes 1.4 times as long.</p>
+            <p>A few benchmarks run slower than in 0.10.6 although NetWasm's output for them is better. In NewtR, a Newton-Raphson loop, the value being refined used to live in linear memory and is now a Wasm local. Wasmtime's register allocator keeps that local in a stack slot around the loop because it is still needed after a later call, and the store and reload on each iteration make the loop take 1.9 times as long. Mono AOT's build of the same loop runs at the same speed as ours. This is the kind of result that only shows when you look at the native code, which is why every change here was measured on a table this size.</p>
+          </section>
+
+          <div class="guide-next">
+            <p class="section-kicker">NetWasm</p>
+            <h2>Compile the next C# program.</h2>
+            <div class="guide-actions">
+              <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">Open the Playground <span aria-hidden="true">↗</span></a>
+              <a class="button button-quiet" href="../../compile-csharp-to-webassembly/">Install and publish locally</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <p>C# at native Wasm size.</p>
+      <div class="footer-links">
+        <a href="../../">Home</a>
+        <a href="../../guides/csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </footer>
+  </body>
+</html>

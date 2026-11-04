@@ -589,6 +589,13 @@ code, pre { font-family: var(--mono); }
 .guide-content ul, .guide-content ol { padding-left: 24px; }
 .guide-content li + li { margin-top: 10px; }
 .guide-content code:not(pre code) { padding: .12em .34em; border: 1px solid var(--line); border-radius: 5px; background: var(--bg-soft); color: var(--text); font-size: .88em; }
+.table-scroll { overflow-x: auto; margin: 26px 0; border: 1px solid var(--line); border-radius: 14px; background: var(--bg-raised); }
+.guide-content table { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.guide-content th, .guide-content td { padding: 11px 16px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+.guide-content th:first-child, .guide-content td:first-child { text-align: left; }
+.guide-content th { color: var(--text); font-weight: 700; background: var(--bg-soft); }
+.guide-content td { color: var(--muted); }
+.guide-content tbody tr:last-child td { border-bottom: 0; }
 .guide-callout { margin: 35px 0 0; padding: 25px 28px; border-left: 4px solid var(--accent); background: var(--bg-raised); }
 .guide-callout > strong { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
 .guide-callout p { margin-bottom: 0; font-size: 15px; }
@@ -596,6 +603,7 @@ code, pre { font-family: var(--mono); }
 .guide-terminal pre { padding: 26px 30px; font-size: 14px; }
 .guide-next { padding: clamp(36px, 6vw, 64px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-raised); }
 .guide-next h2 { margin: 0; font-size: clamp(36px, 5vw, 62px); }
+
 
 footer { width: min(calc(100% - 40px), var(--max)); min-height: 150px; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 30px; border-top: 1px solid var(--line); }
 footer > p { color: var(--muted); font-size: 13px; }

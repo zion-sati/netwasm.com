@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b10" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+    <meta name="description" content="How NetWasm collects .NET garbage in WebAssembly linear memory: compiler-published roots, a shadow stack that rewinds like a stack pointer, headerless objects, zeroed runs, side bitmaps and free pinning.">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="NetWasmGC: A Precise, Non-Moving Garbage Collector for .NET on WebAssembly">
+    <meta property="og:description" content="Compiler-published roots, a rewinding shadow stack, headerless objects and bump allocation from zeroed runs.">
+    <meta property="og:url" content="https://www.netwasm.com/blog/netwasmgc/">
+    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NetWasmGC: A Precise, Non-Moving Garbage Collector for .NET on WebAssembly">
+    <meta name="twitter:description" content="Compiler-published roots, a rewinding shadow stack, headerless objects and bump allocation from zeroed runs.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <link rel="canonical" href="https://www.netwasm.com/blog/netwasmgc/">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="../../favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" sizes="180x180">
+    <title>NetWasmGC: A Precise, Non-Moving Garbage Collector for .NET on WebAssembly</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "NetWasmGC: A Precise, Non-Moving Garbage Collector for .NET on WebAssembly",
+        "description": "How NetWasm collects .NET garbage in WebAssembly linear memory.",
+        "datePublished": "2026-11-05",
+        "dateModified": "2026-11-05",
+        "url": "https://www.netwasm.com/blog/netwasmgc/",
+        "mainEntityOfPage": "https://www.netwasm.com/blog/netwasmgc/"
+      }
+    </script>
+    <link rel="stylesheet" href="../../styles.css">
+    <script src="../../site.js" defer></script>
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <nav aria-label="Primary navigation">
+        <a href="../../">Home</a>
+        <a href="../../compile-csharp-to-webassembly/">Compile C# to Wasm</a>
+        <a href="../../guides/csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/index.md" target="_blank" rel="noopener noreferrer">Docs</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change color theme"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"/></svg></button>
+        <a class="button button-small playground-link" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer"><i></i> Try it now <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="guide-hero">
+        <p class="section-kicker">Engineering · 5 November 2026</p>
+        <h1>NetWasmGC: a precise, non-moving garbage collector for .NET on WebAssembly</h1>
+        <p>WebAssembly gives a garbage collector no stack to scan. This is how NetWasm collects .NET objects in linear memory anyway, exactly, with finalizers, weak references and pinning intact, in about 1,300 lines of C for the collector core.</p>
+        <div class="guide-actions">
+          <a class="button button-primary" href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md" target="_blank" rel="noopener noreferrer">Choosing a garbage collector <span aria-hidden="true">↗</span></a>
+          <a class="button button-quiet" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">Benchmark method</a>
+        </div>
+      </header>
+
+      <div class="guide-layout">
+        <aside class="guide-toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <a href="#problem">No stack to scan</a>
+          <a href="#roots">Roots from the compiler</a>
+          <a href="#rewind">A stack pointer for roots</a>
+          <a href="#addresses">Roots behind an address</a>
+          <a href="#headerless">Headerless objects</a>
+          <a href="#allocation">Allocation by bump</a>
+          <a href="#marking">Marking without a stack</a>
+          <a href="#lifetimes">Finalizers and weak references</a>
+          <a href="#pinning">Pinning costs nothing</a>
+          <a href="#compact">Compact, the size-first core</a>
+          <a href="#results">Results</a>
+          <a href="#limits">What it does not do</a>
+        </aside>
+
+        <article class="guide-content">
+          <section id="problem">
+            <h2>No stack to scan</h2>
+            <p>A .NET collector normally finds the live objects by walking the thread's stack. CoreCLR knows, at every safepoint, which stack slots and registers hold object references, and Mono can fall back to scanning the stack conservatively. Neither works inside WebAssembly. A Wasm function's locals and operand stack belong to the engine. They are not in linear memory, and a module cannot walk its own call stack. A reference held only in a Wasm local is invisible to anything the module can run.</p>
+            <p>The WebAssembly GC proposal answers this by moving objects out of linear memory into the engine's heap. That does not fit .NET. A <code>fixed</code> statement, a <code>Span&lt;T&gt;</code> over an array, a <code>ref</code> into the middle of an object and a buffer handed to C code are all linear-memory addresses into managed objects. NetWasm keeps the managed heap in linear memory and brings its own collector.</p>
+            <p>That collector also has to provide what .NET programs actually use: finalizers that may resurrect their objects, short and long weak references, <code>ConditionalWeakTable</code>'s ephemerons, interior and one-past-the-end references, pinning, and objects held by JavaScript or native code. NetWasm started on the Boehm collector, built for Wasm and patched for memory64. It worked, but it carried tens of kilobytes of general machinery into every application, and it is gone. NetWasm now ships three choices: NetWasmGC for speed, Compact for size, and Bump, which never collects, for bounded jobs. This post is mostly about NetWasmGC.</p>
+          </section>
+
+          <section id="roots">
+            <h2>Roots come from the compiler</h2>
+            <p>A collector cannot tell an object address from an integer with the same bits by looking at memory. A conservative collector guesses, and a guess keeps garbage alive. NetWasm does not guess: the compiler knows the type of every local, argument, field and evaluation-stack value, so it tells the runtime exactly where the references are.</p>
+            <p>A method that holds references across a call that can collect gets a <em>root frame</em>: a run of reference-sized slots on a shadow stack in linear memory. The method's reference locals and arguments get stable slots there. Reads use a copy cached in a Wasm local, and every assignment keeps the slot in step. References that live only on the evaluation stack are published at the safepoints that need them rather than on every instruction. Within a block the compiler proves which zero stores and republications are redundant and drops them, but it still clears a slot whose reference is dead, so an object's lifetime is never stretched by an optimization.</p>
+            <p>Objects describe themselves the same way. Every type's layout lists the byte offsets of its reference fields, plus an element layout for arrays and strings, and the collector traces those offsets only. Integer fields, unmanaged memory and native stacks are never scanned. One regression test stores an object's address in an <code>int</code> field and checks that the object is still reclaimed.</p>
+          </section>
+
+          <section id="rewind">
+            <h2>A stack pointer for roots</h2>
+            <p>The shadow stack is an arena. <code>root_frame_enter</code> advances a cursor by the frame's size, and leaving the method moves it back. The first 128 KiB are acquired on first use; deeper recursion links further chunks of at least 4 KiB. A collection traces each chunk from its start to its cursor, which is exactly the set of live frames, because frames are strictly last-in, first-out.</p>
+            <p>Exceptions were the expensive part. Every method with a root frame used to wrap its body in a <code>try_table</code> whose only job was to leave the frame and rethrow. Wasmtime treats a call inside a handler as clobbering every register, so each of those functions saved and restored all of its callee-saved registers, floating point included. A native profile of a UI-style churn workload spent 26% of its samples in those prologues and epilogues.</p>
+            <p>Native code never pays that, because a native stack pointer simply snaps back when an exception unwinds. NetWasm now does the same with its arenas. Methods leave their frames only on normal exit. Each exception region records where the root arena, the value-frame arena and the stack-trace stack stood when it began, and the landing pad that catches an exception restores those marks in one call. The cleanup-only handlers disappeared: the churn workload went from 12.32 to 10.14 ms, integer formatting took 0.77 of its time, and the benchmark module shrank from 134,417 to 123,611 bytes. Tests check that objects held only by the skipped frames become collectable after the catch.</p>
+          </section>
+
+          <section id="addresses">
+            <h2>Roots behind an address</h2>
+            <p>Root frames hold what a method keeps in Wasm locals. A local whose address the method takes cannot live there: a <code>ref</code>, a <code>Span&lt;T&gt;</code> over a stack buffer and a struct's <code>this</code> all need a linear-memory address. Those locals live in the method's value frame, a second arena with the same last-in, first-out cursor.</p>
+            <p><a href="https://github.com/zion-sati/NetWasm/issues/144">Issue #144</a> showed what that split had missed. A page failed with an <code>InvalidCastException</code> in a library method, depending on unrelated code elsewhere in the app, because a collection had run at the wrong moment. There were two causes. Six runtime intrinsics that allocate, such as cloning a delegate's invocation list, were not safepoints, so their callers published nothing around them, and <code>Delegate.Combine</code>'s new list was freed while the clone allocated. And a <code>params ReadOnlySpan&lt;Node&gt;</code> argument kept its nodes only in a stack inline array that the caller never read again after making the span. A local whose address is taken now stays a root at every safepoint its address reaches.</p>
+            <p>Checking the rest of that class turned up a third gap. A safepoint copied what a method held into its root frame, and a collection read only those copies, so a reference that a callee stored into its caller's value frame through a span or a ref field stayed invisible until the caller's next safepoint. NetWasmGC freed the elements a callee had just written into an inline array.</p>
+            <p>The fix traces value frames instead of publishing more. A value frame that can hold references carries a map, one bit for each reference-sized word. A map of one word lives in the frame's header, and a longer one follows the frame's bytes. A collection walks the live value frames and traces the mapped words as they are when it runs, so whatever a callee wrote is seen, and frames start zeroed, so a mapped word never holds a stale address. Safepoints no longer publish that storage at all, so a method that takes addresses keeps fewer root slots and stores less at each one. With NetWasmGC at O3, the micro-benchmark suite runs in 0.9992 of its earlier time: 0.5% slower on cases between 10 and 100 ns, and 1 to 2% faster on longer ones.</p>
+            <p>Only mapped frames join the list the collector walks. Entering a frame without references bumps the arena's cursor, and leaving it checks only that the frame lies in the arena's current chunk below the cursor before moving the cursor back; a frame in an earlier chunk takes an out-of-line path, and any other address traps. Leaving a mapped frame checks that it is the newest on the list and in the current chunk, then restores the list head and the cursor. If it is not, which happens only when frames above it were abandoned without their leaves, the out-of-line path finds it on the list or traps. The fast paths matter more than they sound. dotnet/performance passes every benchmark result through a generic method that enters a frame for a rarely taken branch, so every case paid for its leave: 10.7 ns a call while every value frame joined the list, 12.2 to 13.0 ns with this change's first leave, which inlined all its checks and the walk through earlier chunks, and 8.3 ns now.</p>
+            <p>Each class got a guard that outlives the fix. An intrinsic that is not a safepoint now stops the compilation if its code can call into the collector. The runtime has a stress build that collects before every allocation and poisons what it frees, and the release runs 384 GC tests under it on both collectors, among them 50 ways a program can hold an object while a collection runs.</p>
+          </section>
+
+          <section id="headerless">
+            <h2>Objects without a collector header</h2>
+            <p>Every managed object in NetWasm starts with its type id. NetWasmGC used to put a five-word header in front of that as well: owner, descriptor, payload size, element count and element size, 32 bytes per object on wasm32. A small object paid more for its header than for its fields.</p>
+            <p>Now no collector stores anything per object. When NetWasmGC needs an object's size or references, it calls the runtime's layout function on the object's type id. An array is one allocation, its fields followed by its elements, so a <code>new int[16]</code> is a single object rather than an object and a separate buffer. With both changes, which shipped together in NetWasm 0.10.0, peak linear memory on our full-transaction workload fell from 36.9 to 20.9 MiB and on the retained object graph from 31.7 to 15.7 MiB.</p>
+            <p>Objects are grouped by size and by whether they contain references. A string or a byte array never needs tracing, so it lives in blocks the marker never visits.</p>
+          </section>
+
+          <section id="allocation">
+            <h2>Allocation is a pointer bump through zeroed runs</h2>
+            <p>Objects under 4 KiB live in 64 KiB blocks, one slot size per block. Each block begins with its metadata, including three side bitmaps: allocated, marked and pending. Mark state lives beside the objects, not in them, so marking never writes to object memory.</p>
+            <p>A slot is always at least one byte longer than its object. .NET allows a reference one past the end of an array, as a span's end can be, and that address must name exactly one object. CoreCLR gets the gap from the header of the next object; NetWasmGC gets it from the slot.</p>
+            <p>Allocation works in <em>runs</em>. When a size class needs space, it finds up to 4 KiB of consecutive free slots in a block with a bitmap scan, marks them allocated, zeroes them with one <code>memset</code> and charges the whole run to the heap at once. Every allocation after that is a bump: compare the cursor with the run's end, advance it, return the old value. Nothing is counted per object. A run's objects and bytes are counted when it closes. .NET requires new objects to be zeroed, and zeroing a run in one pass is cheaper than zeroing each object, so the runtime does not zero them again.</p>
+            <p>Making the fast path a pure bump took 0.92 of the time on the retained object graph and 0.91 on UI churn. The bump is inlined into the runtime's allocation entry, so most allocations never reach the collector's slow path.</p>
+            <p>Blocks come from arenas that start at 16 blocks, 1 MiB, and double up to 256 blocks. Objects of 4 KiB and more are allocated individually. To find the block or large object that owns an address, NetWasmGC keeps a radix directory over 4 KiB pages: two levels on wasm32, seven on wasm64, each page naming at most two regions, with the last page cached. An exact reference resolves to its slot with one division; interior and endpoint references take a slower, general path.</p>
+          </section>
+
+          <section id="marking">
+            <h2>Marking without a mark stack</h2>
+            <p>A mark stack has to grow, and growing means allocating while the heap is being inspected. NetWasmGC does without one. Marking an object sets its mark bit and its pending bit and queues its block if the block is not already queued. Draining takes the next queued block and walks its pending bits with count-trailing-zeros, tracing each object it finds. Large objects have their own pending list. The work list is the bitmaps themselves, so a collection allocates nothing and a deep graph needs no recursion.</p>
+            <p>Sweeping is word-at-a-time: a block's marked bitmap becomes its allocated bitmap, and the population count is its live total. A block left empty goes to a shared pool that any size class can take, which is what keeps one burst of 48-byte objects from stranding memory that 200-byte objects need later. Free slots inside a surviving block are reused by the next run search. The next collection is due when the occupied heap reaches twice what survived, plus a 4 MiB floor.</p>
+          </section>
+
+          <section id="lifetimes">
+            <h2>Finalizers, weak references and ephemerons</h2>
+            <p>Precise roots are not enough on their own; .NET's lifetime rules decide what reachable means. Both collector cores share one lifetime layer that runs between marking and sweeping:</p>
+            <ol>
+              <li>Mark ordinary roots and every pending finalizer graph, and drain ephemerons to a fixed point.</li>
+              <li>Clear short weak references to unreachable objects.</li>
+              <li>Snapshot every unreachable finalizable object before promoting any of them, then queue and trace the whole set.</li>
+              <li>Run the ephemeron fixed point again, because a finalizable key may have just become reachable.</li>
+              <li>Clear long weak references and dead ephemeron entries, then sweep.</li>
+            </ol>
+            <p>Finalizers run after the collection returns. They may allocate, resurrect their objects and trigger another collection; the whole pending queue stays rooted while they do. Weak, ephemeron and finalizer bookkeeping lives outside the managed heap, so none of it is mistaken for a root.</p>
+          </section>
+
+          <section id="pinning">
+            <h2>Pinning costs nothing</h2>
+            <p>Objects never move, so a pinned object needs no special treatment. A <code>fixed</code> pointer, a pinned <code>GCHandle</code> or a buffer passed to C code or JavaScript is just the object's address. The handle keeps the object alive; nothing has to stop it from moving. In a moving collector, pinning fragments the heap and complicates every compaction. Here it is a counter kept for diagnostics.</p>
+            <p>Interop builds on the same pieces. Objects held across the JavaScript boundary, by pending async calls, host callbacks and component resources, are referenced through a handle table the collector traces. A native callback can allocate and trigger a collection while its caller's roots and <code>GCHandle</code> state stay valid; that is part of the native interop test matrix on wasm32 and wasm64.</p>
+          </section>
+
+          <section id="compact">
+            <h2>Compact, the size-first core</h2>
+            <p>NetWasmGC spends code and memory on speed. Compact, the default, spends them on size. It sits behind the same interface and lifetime layer with its own small mark-sweep core: objects up to 4 KiB are packed into 64 KiB chunks behind a one-word header holding the slot size and the mark, traced and free flags. A start bitmap per chunk and an address-ordered list of chunks resolve exact, interior and one-past-the-end references. Freed slots go to free lists by size. Its mark stack grows on demand, and if it cannot grow, the collector rescans the heap for marked objects instead, so collection never fails for lack of memory.</p>
+            <p>A complete <code>Console.WriteLine(42)</code> component published at <code>Oz</code> is CONSOLE42_COMPACT bytes with Compact, CONSOLE42_NETWASM with NetWasmGC and CONSOLE42_BUMP with Bump. Only the selected collector is linked.</p>
+          </section>
+
+          <section id="results">
+            <h2>Results</h2>
+            <p>Three workloads compiled from the same C# with NetWasm 0.10.8 at <code>O3</code>, Mono AOT and desktop .NET 11 RC3, every Wasm build run by Wasmtime 49.0.3 on an Apple M1 Max. Median of 15 fresh-process runs in milliseconds; every run's checksum matched desktop .NET.</p>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Workload</th><th>NetWasmGC</th><th>Compact</th><th>Mono AOT</th><th>.NET 11 JIT</th><th>.NET 11 NativeAOT</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Full transaction</td><td><strong>28.5</strong></td><td>42.0</td><td>56.6</td><td>49.7</td><td>32.6</td></tr>
+                  <tr><td>Retained object graph</td><td><strong>4.8</strong></td><td>12.5</td><td>14.4</td><td>9.8</td><td>7.6</td></tr>
+                  <tr><td>UI churn</td><td><strong>7.7</strong></td><td>21.2</td><td>27.4</td><td>8.7</td><td>6.7</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>NetWasmGC takes 50%, 66% and 72% less time than Mono AOT and less than the desktop JIT on all three, and less than desktop NativeAOT on the transaction and the object graph. NativeAOT, with its generational, moving collector, is still ahead on churn. Peak linear memory was 20.9, 15.7 and 7.3 MiB with NetWasmGC and 17.4, 11.8 and 1.7 MiB with Compact; Mono reserves 50 MiB at start. The <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">performance page</a> has the ranges, the workloads and the command that reproduces them.</p>
+          </section>
+
+          <section id="limits">
+            <h2>What it does not do</h2>
+            <p>NetWasmGC is not generational, not concurrent and does not move objects. Every collection marks the whole live heap while the program waits, so pauses grow with what the program keeps. Size classes bound fragmentation; they do not remove it, and nothing compacts the heap. Freed memory is reused by the instance but WebAssembly memory never shrinks. Desktop .NET's collectors make different trades and win where long-lived heaps and short pauses matter most.</p>
+            <p>For a browser page, a worker, a serverless handler or a command-line tool, NetWasmGC trades those features for a collector the compiler can feed exact roots, that allocates with a pointer bump and that never stops a pinned buffer from being handed to C. Select it in the application project:</p>
+            <div class="terminal guide-terminal">
+              <div class="terminal-bar"><span class="traffic"><i></i><i></i><i></i></span><span>MyApp.csproj</span><button class="copy-button" type="button" data-copy-target="gc-select-code">Copy</button></div>
+              <!--email_off--><pre id="gc-select-code"><code>&lt;PropertyGroup&gt;
+  &lt;NetWasmGarbageCollector&gt;NetWasm&lt;/NetWasmGarbageCollector&gt;
+&lt;/PropertyGroup&gt;</code></pre><!--/email_off-->
+            </div>
+            <p>Leave it unset for Compact. Benchmark your own application before choosing; neither collector is fastest everywhere, and the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md" target="_blank" rel="noopener noreferrer">collector guide</a> lists the tradeoffs.</p>
+          </section>
+
+          <div class="guide-next">
+            <p class="section-kicker">NetWasm</p>
+            <h2>Compile the next C# program.</h2>
+            <div class="guide-actions">
+              <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">Open the Playground <span aria-hidden="true">↗</span></a>
+              <a class="button button-quiet" href="../../compile-csharp-to-webassembly/">Install and publish locally</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      <a class="brand" href="../../" aria-label="NetWasm home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 29V11l13 18V11l13 18V11"/></svg><span>NetWasm</span></a>
+      <p>C# at native Wasm size.</p>
+      <div class="footer-links">
+        <a href="../../">Home</a>
+        <a href="../../guides/csharp-web-worker/">C# Web Workers</a>
+        <a href="https://github.com/zion-sati/NetWasm" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </footer>
+  </body>
+</html>
