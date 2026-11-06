@@ -109,6 +109,7 @@ th { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: upp
       <thead><tr><th>Build</th><th>Median (ms)</th><th>Fastest&ndash;slowest (ms)</th><th>NetWasm (NetWasmGC) vs this</th></tr></thead>
       <tbody><tr><td>NetWasm 0.11.1, <code>O3</code>, NetWasmGC</td><td>1,555</td><td>1,552&ndash;1,581</td><td>&ndash;</td></tr><tr><td>NetWasm 0.11.1, <code>O3</code>, Compact</td><td>1,704</td><td>1,703&ndash;1,704</td><td>1.10&times; faster</td></tr><tr><td>Mono AOT, .NET 11 RC3, Wasm SIMD</td><td>2,311</td><td>2,306&ndash;2,322</td><td>1.49&times; faster</td></tr><tr><td>Desktop .NET 11 RC3 JIT, default tiering</td><td>1,018</td><td>1,007&ndash;1,028</td><td>1.53&times; slower</td></tr><tr><td>Desktop .NET 11 RC3 NativeAOT</td><td>1,147</td><td>1,145&ndash;1,152</td><td>1.36&times; slower</td></tr></tbody>
     </table></div>
+    <p class="lede">In a browser, DoomSharp's own NetWasm build (<a href="https://github.com/davidfowl/doomsharp/pull/60" target="_blank" rel="noopener noreferrer">davidfowl/doomsharp#60</a>, NetWasm 0.11.1 at <code>O3</code> with NetWasmGC) renders 120 frames <b>1.28&times; faster</b> than its Blazor WebAssembly AOT build in headless Chromium: 1,750 ms against 2,236 ms on the same Apple M1 Max, from 0.69 MiB of Brotli-compressed files against 3.67 MiB. <a href="https://davidfowl.github.io/doomsharp/netwasm/" target="_blank" rel="noopener noreferrer">Play the NetWasm build</a>.</p>
   </section>
 
   <section class="panel notes">
