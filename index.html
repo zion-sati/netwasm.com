@@ -8,12 +8,12 @@
     <meta name="description" content="Compile C# and .NET CIL to small, standalone WebAssembly modules and WASI components with NetWasm's independent compiler, runtime, CoreLib, and SDK.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta property="og:description" content="C# with precise GC: 28,377 bytes for printing 42, smaller than the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
+    <meta property="og:description" content="C# with precise GC: 28,377 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
     <meta property="og:url" content="https://www.netwasm.com/">
     <meta property="og:image" content="https://www.netwasm.com/og-card.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta name="twitter:description" content="C# with precise GC: 28,377 bytes for printing 42, smaller than the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
+    <meta name="twitter:description" content="C# with precise GC: 28,377 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
     <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
     <link rel="canonical" href="https://www.netwasm.com/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
@@ -78,7 +78,7 @@
         <div class="hero-copy">
           <p class="eyebrow"><span></span> Independent .NET. Built outside Microsoft.</p>
           <h1>Compile C#<br>to <em>WebAssembly.</em></h1>
-          <p class="hero-lede">C# with precise GC beats Rust's size-oriented profile for printing <code>42</code>: 28,377 bytes versus 63,528 bytes. Both are standalone WASI 0.3 components. NetWasm includes its runtime and reachable precise-GC support.</p>
+          <p class="hero-lede">C# with precise GC is less than half the size of Rust's size-oriented profile for printing <code>42</code>: 28,377 bytes versus 63,528. Both are standalone WASI 0.3 components. NetWasm includes its runtime and reachable precise-GC support.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">
               Try NetWasm now, no install
@@ -126,7 +126,7 @@
         <div class="section-heading">
           <div>
             <p class="section-kicker">Measured size</p>
-            <h2 id="release-title">C# beats Rust.<br><span>With precise GC included.</span></h2>
+            <h2 id="release-title">Less than half Rust's size.<br><span>With precise GC included.</span></h2>
           </div>
           <p>The released SDK produces a 28,377-byte Release/Oz component for <code>Console.WriteLine(42)</code>, or 11,880 bytes with Brotli quality 11. Rust 1.100.0's documented size-oriented profile produces a 63,528-byte WASI 0.3 component for the same print-42 workload. Running wasm-opt by hand on the core module of Rust's WASI 0.2 build, then re-encoding and stripping the component, brings it to 41,185 bytes: still larger. This is a measured workload, not a claim about the smallest possible Rust binary.</p>
         </div>
