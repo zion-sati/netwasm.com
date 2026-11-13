@@ -106,11 +106,11 @@
               <li>Roslyn compiles C# to ordinary CIL.</li>
               <li>NetWasm performs closed-world analysis and compiles reachable CIL to Wasm.</li>
               <li>Only reachable code, data, generics, runtime support, and host imports are retained.</li>
-              <li>The default executable output is a standalone wasm32 WASI Preview 2 component.</li>
+              <li>The default executable output is a standalone wasm32 WASI 0.3 component.</li>
             </ul>
             <div class="guide-callout">
               <strong>Measured baseline</strong>
-              <p>A clean NetWasm Release/Oz build of <code>Console.WriteLine(42)</code> produces a 39,151-byte uncompressed component with the default Compact collector. That includes the C# application, runtime, and precise GC. Read the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">reproduction methodology</a>.</p>
+              <p>A clean NetWasm Release/Oz build of <code>Console.WriteLine(42)</code> produces a 28,377-byte uncompressed component with the default Compact collector. That includes the C# application, runtime, and precise GC. Read the <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">reproduction methodology</a>.</p>
             </div>
           </section>
 
@@ -149,7 +149,7 @@
 
           <section id="run">
             <h2>Run the component</h2>
-            <p>Run the published component with a compatible WASI Preview 2 host. For example, with Wasmtime:</p>
+            <p>Run the published component with a compatible WASI 0.3 host. For example, with Wasmtime:</p>
             <div class="terminal guide-terminal">
               <div class="terminal-bar">
                 <span class="traffic"><i></i><i></i><i></i></span>
@@ -176,7 +176,7 @@
               <li><strong>Closed-world analysis:</strong> NetWasm starts from the application entry points and follows reachable managed code.</li>
               <li><strong>CIL to Wasm:</strong> The compiler specializes concrete generics, lays out managed data, and emits WebAssembly instructions.</li>
               <li><strong>Runtime linking:</strong> Required CoreLib and runtime support are linked into the program. Unreachable support stays out.</li>
-              <li><strong>Component packaging:</strong> The default publish path wraps the core module as a WASI Preview 2 component.</li>
+              <li><strong>Component packaging:</strong> The default publish path wraps the core module as a WASI 0.3 component.</li>
             </ol>
             <p>This is ahead-of-time compilation. NetWasm does not interpret CIL at runtime and does not embed a general desktop CLR in the output.</p>
           </section>

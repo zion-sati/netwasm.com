@@ -15,11 +15,11 @@
   <text x="162" y="83" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="34" font-weight="700">NetWasm</text>
   <text x="70" y="220" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="88" font-weight="800" letter-spacing="-5">C# beats Rust.</text>
   <text x="70" y="310" fill="#9b7cff" font-family="Arial, sans-serif" font-size="88" font-weight="800" letter-spacing="-5">With precise GC.</text>
-  <text x="73" y="377" fill="#aab3c1" font-family="Arial, sans-serif" font-size="27">Print 42 · WASI Preview 2 · measured Rust size profile</text>
+  <text x="73" y="377" fill="#aab3c1" font-family="Arial, sans-serif" font-size="27">Print 42 · WASI 0.3 · measured Rust size profile</text>
   <rect x="72" y="438" width="392" height="102" rx="12" fill="#10151e" stroke="#30394a"/>
   <text x="97" y="474" fill="#8590a0" font-family="monospace" font-size="15" letter-spacing="2">FINAL COMPONENT</text>
-  <text x="95" y="520" fill="#f4f6fa" font-family="monospace" font-size="45" font-weight="700">39,151 bytes</text>
-  <text x="810" y="455" fill="#aab3c1" font-family="Arial, sans-serif" font-size="24">Rust: 52,569 bytes</text>
+  <text x="95" y="520" fill="#f4f6fa" font-family="monospace" font-size="45" font-weight="700">28,377 bytes</text>
+  <text x="810" y="455" fill="#aab3c1" font-family="Arial, sans-serif" font-size="24">Rust: 63,528 bytes</text>
   <text x="810" y="500" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="26" font-weight="700">Runtime included.</text>
   <text x="810" y="538" fill="#f4f6fa" font-family="Arial, sans-serif" font-size="26" font-weight="700">Precise GC included.</text>
   <text x="810" y="582" fill="#9b7cff" font-family="monospace" font-size="18">www.netwasm.com</text>
