@@ -10,11 +10,11 @@
     <meta property="og:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
     <meta property="og:description" content="C# with precise GC: 28,377 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
     <meta property="og:url" content="https://www.netwasm.com/">
-    <meta property="og:image" content="https://www.netwasm.com/og-card.png">
+    <meta property="og:image" content="https://www.netwasm.com/og-card-wasi03.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
     <meta name="twitter:description" content="C# with precise GC: 28,377 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
-    <meta name="twitter:image" content="https://www.netwasm.com/og-card.png">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card-wasi03.png">
     <link rel="canonical" href="https://www.netwasm.com/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
     <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -222,7 +222,7 @@
           <p>The NetWasm Release/Oz component for <code>Console.WriteLine(42)</code> is 27.7 KiB. The retained .NET 11 RC1 Blazor WebAssembly AOT print-42 build loads 14.58 MiB of Wasm. These are different deployment stacks, not equivalent UI frameworks.</p>
         </div>
         <a class="comparison-chart" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer" aria-label="Read the reproducible AOT size comparison methodology">
-          <img src="aot-console42-size.svg" width="960" height="548" alt="Uncompressed AOT Wasm: NetWasm with Compact GC is 27.7 KiB, Blazor .NET 10 is 11.71 MiB, and Blazor .NET 11 RC1 is 14.58 MiB.">
+          <img src="aot-console42-size-wasi03.svg" width="960" height="548" alt="Uncompressed AOT Wasm: NetWasm with Compact GC is 27.7 KiB, Blazor .NET 10 is 11.71 MiB, and Blazor .NET 11 RC1 is 14.58 MiB.">
         </a>
         <p class="comparison-note">Uncompressed Wasm, excluding JavaScript and the host engine. Binary units: 1 KiB = 1,024 bytes and 1 MiB = 1,024 KiB. NetWasm selects Compact by default. <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer">Reproduce the comparison <span aria-hidden="true">↗</span></a></p>
       </section>
