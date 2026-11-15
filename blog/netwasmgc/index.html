@@ -155,7 +155,7 @@
           <section id="compact">
             <h2>Compact, the size-first core</h2>
             <p>NetWasmGC spends code and memory on speed. Compact, the default, spends them on size. It sits behind the same interface and lifetime layer with its own small mark-sweep core: objects up to 4 KiB are packed into 64 KiB chunks behind a one-word header holding the slot size and the mark, traced and free flags. A start bitmap per chunk and an address-ordered list of chunks resolve exact, interior and one-past-the-end references. Freed slots go to free lists by size. Its mark stack grows on demand, and if it cannot grow, the collector rescans the heap for marked objects instead, so collection never fails for lack of memory.</p>
-            <p>A complete <code>Console.WriteLine(42)</code> component published at <code>Oz</code> is CONSOLE42_COMPACT bytes with Compact, CONSOLE42_NETWASM with NetWasmGC and CONSOLE42_BUMP with Bump. Only the selected collector is linked.</p>
+            <p>With NetWasm 0.10.8, a complete <code>Console.WriteLine(42)</code> component published at <code>Oz</code> is 37,789 bytes with Compact, 40,746 with NetWasmGC and 33,762 with Bump. Only the selected collector is linked.</p>
           </section>
 
           <section id="results">
