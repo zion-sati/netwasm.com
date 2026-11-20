@@ -313,8 +313,6 @@ code, pre { font-family: var(--mono); }
 .manifesto p::before { content: "×"; margin-right: 10px; color: var(--accent); font-size: 1.5em; }
 
 .section { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; padding: clamp(90px, 12vw, 160px) 0; }
-.size-comparison { border-bottom: 1px solid var(--line); }
-.size-comparison .section-heading h2 span { color: var(--accent); }
 .comparison-chart {
   display: block;
   overflow: hidden;

@@ -8,13 +8,13 @@
     <meta name="description" content="Compile C# and .NET CIL to small, standalone WebAssembly modules and WASI components with NetWasm's independent compiler, runtime, CoreLib, and SDK.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta property="og:description" content="C# with precise GC: 28,383 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
+    <meta property="og:description" content="C# with precise GC: 27,583 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
     <meta property="og:url" content="https://www.netwasm.com/">
-    <meta property="og:image" content="https://www.netwasm.com/og-card-28383.png">
+    <meta property="og:image" content="https://www.netwasm.com/og-card-27583.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NetWasm: Compile C# to WebAssembly at native Wasm size">
-    <meta name="twitter:description" content="C# with precise GC: 28,383 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
-    <meta name="twitter:image" content="https://www.netwasm.com/og-card-28383.png">
+    <meta name="twitter:description" content="C# with precise GC: 27,583 bytes for printing 42, less than half the measured Rust size profile. Compile standalone WebAssembly with NetWasm.">
+    <meta name="twitter:image" content="https://www.netwasm.com/og-card-27583.png">
     <link rel="canonical" href="https://www.netwasm.com/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
     <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -78,7 +78,7 @@
         <div class="hero-copy">
           <p class="eyebrow"><span></span> Independent .NET. Built outside Microsoft.</p>
           <h1>Compile C#<br>to <em>WebAssembly.</em></h1>
-          <p class="hero-lede">C# with precise GC is less than half the size of Rust's size-oriented profile for printing <code>42</code>: 28,383 bytes versus 63,528. Both are standalone WASI 0.3 components. NetWasm includes its runtime and reachable precise-GC support.</p>
+          <p class="hero-lede">C# with precise GC is less than half the size of Rust's size-oriented profile for printing <code>42</code>: 27,583 bytes versus 63,528. Both are standalone WASI 0.3 components. NetWasm includes its runtime and reachable precise-GC support.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="https://playground.netwasm.com/" target="_blank" rel="noopener noreferrer">
               Try NetWasm now, no install
@@ -98,7 +98,7 @@
           </div>
           <div class="proof-body">
             <p class="proof-label">FINAL COMPONENT</p>
-            <p class="proof-number">28,383</p>
+            <p class="proof-number">27,583</p>
             <p class="proof-unit">bytes</p>
             <div class="proof-rule"></div>
             <ul>
@@ -128,7 +128,7 @@
             <p class="section-kicker">Measured size</p>
             <h2 id="release-title">Less than half Rust's size.<br><span>With precise GC included.</span></h2>
           </div>
-          <p>The released SDK produces a 28,383-byte Release/Oz component for <code>Console.WriteLine(42)</code>, or 11,992 bytes with Brotli quality 11. Rust 1.100.0's documented size-oriented profile produces a 63,528-byte WASI 0.3 component for the same print-42 workload. Running wasm-opt by hand on the core module of Rust's WASI 0.2 build, then re-encoding and stripping the component, brings it to 41,185 bytes: still larger. This is a measured workload, not a claim about the smallest possible Rust binary.</p>
+          <p>The released SDK produces a 27,583-byte Release/Oz component for <code>Console.WriteLine(42)</code>, or 11,525 bytes with Brotli quality 11. Rust 1.100.0's documented size-oriented profile produces a 63,528-byte WASI 0.3 component for the same print-42 workload. Running wasm-opt by hand on the core module of Rust's WASI 0.2 build, then re-encoding and stripping the component, brings it to 41,185 bytes: still larger. This is a measured workload, not a claim about the smallest possible Rust binary.</p>
         </div>
         <div class="ecosystem-grid">
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md" target="_blank" rel="noopener noreferrer">
@@ -140,14 +140,44 @@
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md" target="_blank" rel="noopener noreferrer">
             <span class="ecosystem-number">55.3%</span>
             <h3>Smaller than the measured Rust profile</h3>
-            <p>28,383 versus 63,528 uncompressed bytes. Both artifacts print 42 and use WASI 0.3. Exact toolchain and profile details are published.</p>
+            <p>27,583 versus 63,528 uncompressed bytes. Both artifacts print 42 and use WASI 0.3. Exact toolchain and profile details are published.</p>
             <strong>Reproduce both builds <span>↗</span></strong>
           </a>
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/releases/latest" target="_blank" rel="noopener noreferrer">
             <span class="ecosystem-number">3</span>
             <h3>Choose the collector for your workload</h3>
-            <p>Compact is the size-first default. NetWasmGC favors throughput; Bump never collects. Objects carry no collector header, so Compact and NetWasmGC use little memory. All use the same SDK selection setting.</p>
+            <p>Compact is the size-first default. NetWasmGC favors throughput, and NetWasmGen, NetWasmGC with generations, is up to three times as fast where a large set of objects stays alive; Bump never collects. All use the same SDK selection setting.</p>
             <strong>Read the latest release notes <span>↗</span></strong>
+          </a>
+        </div>
+      </section>
+
+      <section class="feature-section section" aria-labelledby="packages-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">net10.0-netwasm</p>
+            <h2 id="packages-title">Your NuGet packages.<br><span>Native ones included.</span></h2>
+          </div>
+          <p>A NetWasm project targets <code>net10.0-netwasm</code>, a .NET platform target framework like Blazor's <code>net10.0-browser</code>. NuGet restores each package's <code>net10.0</code>, <code>net9.0</code>, <code>net8.0</code> or .NET Standard build, newest first, so a package needs no NetWasm build of its own.</p>
+        </div>
+        <div class="ecosystem-grid">
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/package-compatibility.md" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">56/100</span>
+            <h3>Popular packages, unchanged</h3>
+            <p>Of 100 of the most-downloaded nuget.org packages, 56 run their README quick start unchanged and print what desktop .NET prints: Azure.Core, MSAL, CsvHelper, MongoDB.Driver, gRPC's client and more.</p>
+            <strong>Every package's result <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/static-native-interop.md" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">.a</span>
+            <h3>Native archives link as they are</h3>
+            <p>The static archives SkiaSharp and HarfBuzzSharp ship for .NET's WebAssembly SDKs link into the program, and native calls marshal handles, strings and structs as desktop .NET does.</p>
+            <strong>Native interop <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/netstandard-libraries.md" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">Avalonia</span>
+            <h3>The same frame as desktop</h3>
+            <p>Avalonia 12's headless platform, with Skia, compiled XAML and the Fluent theme, renders the same frame as on desktop .NET, with no change to Avalonia.</p>
+            <strong>Packages and libraries <span>↗</span></strong>
           </a>
         </div>
       </section>
@@ -156,37 +186,70 @@
         <div class="section-heading">
           <div>
             <p class="section-kicker">Speed, measured</p>
-            <h2 id="mono-title">Faster than Mono AOT.<br><span>Same C#, same engine.</span></h2>
+            <h2 id="mono-title">More than 3&times; as fast as Mono AOT.<br><span>Same C#, same engine.</span></h2>
           </div>
-          <p>NetWasm runs our allocation and garbage-collection benchmarks faster than Mono AOT (.NET 11, <code>wasi-wasm</code> with Wasm SIMD), compiled from the same C# source and run by the same Wasmtime 50.0.1 on an Apple M1 Max. Each figure is the lower median of two 15-run cohorts, and every run is checked against desktop .NET's result. NetWasmGC also takes less time than desktop .NET 11's JIT and desktop NativeAOT on all three workloads. Without allocation, NetWasm takes less time than Mono AOT on three of the four workloads we publish and ties on the fourth.</p>
+          <p>Across 2,213 micro-benchmark cases, NetWasm runs more than three times as fast as Mono AOT (.NET 11, <code>wasi-wasm</code> with Wasm SIMD), compiled from the same C# and run by the same Wasmtime on an Apple M1 Max. On allocation and garbage-collection workloads NetWasmGC is 2 to 5 times as fast as Mono AOT, and beats desktop .NET 11&rsquo;s JIT and NativeAOT too. Each workload figure is the lower median of two 15-run cohorts, checked against desktop .NET&rsquo;s result.</p>
         </div>
         <div class="ecosystem-grid">
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">52%</span>
-            <h3>Less time: full transaction</h3>
+            <span class="ecosystem-number">2&times;</span>
+            <h3>Full transaction</h3>
             <p>27.3 ms with NetWasmGC versus 57.4 ms for Mono AOT. Strings, a <code>HashSet&lt;int&gt;</code> and <code>decimal</code> balances in a growing dictionary.</p>
             <strong>See the full results <span>↗</span></strong>
           </a>
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">72%</span>
-            <h3>Less time: retained object graph</h3>
+            <span class="ecosystem-number">3.5&times;</span>
+            <h3>Retained object graph</h3>
             <p>4.1 ms versus 14.5 ms to build and keep a graph of 100,000 small objects alive.</p>
             <strong>Versions and settings <span>↗</span></strong>
           </a>
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/performance.md#reproduce" target="_blank" rel="noopener noreferrer">
-            <span class="ecosystem-number">80%</span>
-            <h3>Less time: UI churn</h3>
+            <span class="ecosystem-number">5&times;</span>
+            <h3>UI churn</h3>
             <p>5.5 ms versus 27.4 ms replacing short-lived objects every frame for 500 frames.</p>
             <strong>Reproduce it <span>↗</span></strong>
           </a>
         </div>
-        <p class="comparison-note">On dotnet/performance's micro-benchmarks and NetWasm's own workloads, 2,213 cases, NetWasm takes 0.28 of Mono AOT's time and 1.51 of the desktop JIT's (geometric means). <a href="micro-benchmarks/">See every case →</a></p>
+        <a class="comparison-chart" href="https://github.com/zion-sati/NetWasm/blob/main/docs/micro-benchmarks.md#doomsharp" target="_blank" rel="noopener noreferrer" aria-label="DoomSharp against Mono AOT: method and figures">
+          <img src="doomsharp-vs-mono-aot.svg" width="960" height="600" alt="DoomSharp in headless Chromium on an Apple M1 Max: rendering 120 frames, warmed up, takes 1,686 ms with NetWasm and 2,311 ms with its Blazor WebAssembly build, which is Mono AOT; the page downloads 0.49 MiB with NetWasm and 4.03 MiB with Mono AOT at Brotli quality 11, not counting the game&rsquo;s WAD.">
+        </a>
+        <p class="comparison-note">On dotnet/performance&rsquo;s micro-benchmarks and NetWasm&rsquo;s own workloads, 2,213 cases, NetWasm runs more than three times as fast as Mono AOT and at about two-thirds of the desktop JIT&rsquo;s speed (geometric means). <a href="micro-benchmarks/">See every case →</a></p>
+      </section>
+
+      <section class="feature-section section" aria-labelledby="gen-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Generational collection</p>
+            <h2 id="gen-title">Keep a big heap.<br><span>Collect only what's new.</span></h2>
+          </div>
+          <p>NetWasmGen is NetWasmGC with generations. Most of its collections look only at the objects allocated since the last one and at the old objects the program stored a reference into, so a program that keeps a large set of objects alive while short-lived ones come and go spends far less time collecting. Choose it for services over in-memory state, per-frame garbage, and building and discarding trees.</p>
+        </div>
+        <div class="ecosystem-grid">
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md#when-to-choose-netwasmgen" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">3&times;</span>
+            <h3>As fast over a kept set</h3>
+            <p>67.1 ms against NetWasmGC's 204.0 ms while 250 MB of short-lived arrays and strings pass through 150,000 kept rows.</p>
+            <strong>When to choose it <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md#when-to-choose-netwasmgen" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">1.8&times;</span>
+            <h3>As fast on binary-trees</h3>
+            <p>102.8 ms against 182.3 ms at depth 16: one long-lived tree and many short-lived ones.</p>
+            <strong>Every program measured <span>↗</span></strong>
+          </a>
+          <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm/blob/main/docs/runtime-garbage-collection.md#when-to-choose-netwasmgen" target="_blank" rel="noopener noreferrer">
+            <span class="ecosystem-number">0.93</span>
+            <h3>Of NetWasmGC's time, overall</h3>
+            <p>Across 57 garbage-collection programs. Short runs and data that dies all at once are 3 to 14% slower, so it is opt-in: one property selects it.</p>
+            <strong>Measure your own <span>↗</span></strong>
+          </a>
+        </div>
       </section>
 
       <section class="feature-section section" aria-labelledby="modules-title">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">NetWasm 0.9</p>
+            <p class="section-kicker">JavaScript interop</p>
             <h2 id="modules-title">Call C# from JavaScript.<br><span>Like any other module.</span></h2>
           </div>
           <p>A <code>JsModule</code> project publishes C# <code>[JSExport]</code> methods as a typed JavaScript module. A page imports it, calls <code>open()</code>, and calls the exports directly: synchronously on the page, or behind Promises in a Web Worker. C# calls back into JavaScript, including the DOM, through <code>[JSImport]</code>.</p>
@@ -211,20 +274,6 @@
             <strong>Deploy anywhere static <span>↗</span></strong>
           </a>
         </div>
-      </section>
-
-      <section class="size-comparison section" aria-labelledby="size-comparison-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">AOT vs AOT</p>
-            <h2 id="size-comparison-title">Native Wasm size.<br><span>Measured, not promised.</span></h2>
-          </div>
-          <p>The NetWasm Release/Oz component for <code>Console.WriteLine(42)</code> is 27.7 KiB. The retained .NET 11 RC1 Blazor WebAssembly AOT print-42 build loads 14.58 MiB of Wasm. These are different deployment stacks, not equivalent UI frameworks.</p>
-        </div>
-        <a class="comparison-chart" href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer" aria-label="Read the reproducible AOT size comparison methodology">
-          <img src="aot-console42-size-wasi03.svg" width="960" height="548" alt="Uncompressed AOT Wasm: NetWasm with Compact GC is 27.7 KiB, Blazor .NET 10 is 11.71 MiB, and Blazor .NET 11 RC1 is 14.58 MiB.">
-        </a>
-        <p class="comparison-note">Uncompressed Wasm, excluding JavaScript and the host engine. Binary units: 1 KiB = 1,024 bytes and 1 MiB = 1,024 KiB. NetWasm selects Compact by default. <a href="https://github.com/zion-sati/NetWasm/blob/main/docs/size-and-methodology.md#blazor-webassembly-aot-printing-42" target="_blank" rel="noopener noreferrer">Reproduce the comparison <span aria-hidden="true">↗</span></a></p>
       </section>
 
       <section class="origin section" aria-label="NetWasm independence">
@@ -298,7 +347,7 @@
             <div class="feature-icon" aria-hidden="true">⌁</div>
             <p class="feature-index">03 / WASI</p>
             <h3>Capabilities are explicit.</h3>
-            <p>Programs receive the clocks, HTTP, files, and host interfaces you choose, not ambient access to the machine.</p>
+            <p>Programs receive the clocks, files, HTTP, sockets, TLS and host interfaces you choose, not ambient access to the machine.</p>
           </article>
           <article class="feature feature-wide">
             <div>
@@ -331,7 +380,7 @@
           <a class="ecosystem-card" href="https://github.com/zion-sati/NetWasm.Libraries" target="_blank" rel="noopener noreferrer">
             <span class="ecosystem-number">15</span>
             <h3>Focused libraries</h3>
-            <p>LINQ and Async LINQ, Memory, Pipelines, Web Encodings, HTTP, Regex, JSON, XML, Hashing, reflection-free dependency injection, Options, and structured logging.</p>
+            <p>LINQ, HTTP with HTTP/2 and TLS, Regex, JSON and XML in the framework; Microsoft&rsquo;s own Hashing, Cbor and Configuration packages as published; reflection-free dependency injection, options, configuration binding and structured logging from NetWasm.Libraries.</p>
             <strong>Explore libraries <span>↗</span></strong>
           </a>
           <a class="ecosystem-card" href="https://github.com/zion-sati/TUnit-NetWasm" target="_blank" rel="noopener noreferrer">
