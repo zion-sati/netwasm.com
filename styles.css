@@ -129,11 +129,7 @@ code, pre { font-family: var(--mono); }
 .brand-mark {
   width: 29px;
   height: 29px;
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 3.3;
-  stroke-linecap: square;
-  stroke-linejoin: bevel;
+  fill: var(--accent);
 }
 .site-header nav { display: flex; gap: clamp(18px, 2.8vw, 38px); }
 .site-header nav a, .footer-links a {
